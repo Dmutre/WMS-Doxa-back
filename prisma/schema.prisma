@@ -6,3 +6,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Permission {
+  id              String            @id @db.VarChar(36) @default(uuid())
+  name            String            @unique
+
+  roles           RolePermissions[]
+
+  @@map("permissions")
+}
+
+model Role {
+  id              String            @id @default(uuid())
+  name            String
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt  @map("updated_at")
+  isPreset        Boolean           @default(false) @map("is_preset")
+
+  user            User[]
+  permissions     RolePermissions[]
+
+  @@map("roles")
+}
+
+model RolePermissions {
+  permission      Permission      @relation(fields: [permissionId], references: [id])
+  permissionId    String          @map("permission_id")
+  role            Role            @relation(fields: [roleId], references: [id])
+  roleId          String          @map("role_id")
+  
+  @@id([permissionId, roleId])
+  @@map("role_permissions")
+}
+
+enum StatusEnum {
+  ACTIVE
+  PASSIVE
+  FIRED
+}
+
+model User {
+  id              String        @id @default(uuid())
+  roleId          String        @map("role_id")
+  role            Role          @relation(fields: [roleId], references: [id])
+  firstName       String        @db.VarChar(255) @map("first_name")
+  lastName        String        @db.VarChar(255) @map("last_name")
+  password        String
+  email           String        @unique
+  status          StatusEnum    @default(ACTIVE)
+  phone           String?
+  birthDate       DateTime?     @map("birth_date")
+  shiftSchedule   Json?         @map("shift_schedule")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt  @map("updated_at")
+
+  tokens          Token[]
+
+  @@map("users")
+}
+
+enum TokenType {
+  REFRESH
+  EMAIL_VERIFICATION
+}
+
+model Token {
+  id              String        @id @default(uuid())
+  value           String        @db.Text
+  type            TokenType
+  userId          String?       @map("user_id")
+  user            User?         @relation(fields: [userId], references: [id])
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt  @map("updated_at")
+
+  @@map("tokens")
+}
