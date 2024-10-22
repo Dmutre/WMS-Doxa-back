@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthConfig } from '../../lib/types/configs/auth';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
   imports: [
@@ -13,11 +14,14 @@ import { AuthService } from './auth.service';
         return {
           global: true,
           secret: authConfig.secret,
-          signOptions: { expiresIn: authConfig.ttl },
+          signOptions: { expiresIn: authConfig.accessTtl },
         };
       },
-      inject: [ConfigModule],
+      imports: [ConfigModule],
+      inject: [ConfigService],
     }),
+    ConfigModule,
+    DatabaseModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

@@ -1,4 +1,5 @@
 export interface AuthConfig {
   secret: string;
-  ttl: string;
+  accessTtl: string;
+  refreshTtl: string;
 }

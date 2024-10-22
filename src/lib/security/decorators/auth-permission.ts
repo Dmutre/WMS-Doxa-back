@@ -2,7 +2,7 @@ import { applyDecorators, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth.guard';
 import { PermissionGuard } from '../permission.guard';
 import { RequiredPermissions } from './permissions.decorator';
-import { Permissions } from '../../types/permission';
+import { Permissions } from '../../types/presets/permission';
 
 export function AuthPermissions(permissions: Permissions[]) {
   return applyDecorators(
