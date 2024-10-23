@@ -3,17 +3,17 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepository } from '../../database/repository/user.repository';
-import { RegistrationDTO } from './dto/registration.dto';
-import { hashPassword, validatePassword } from 'src/utils/crypto';
-import { RoleRepository } from 'src/database/repository/role.repository';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Role, RolePermissions, User } from '@prisma/client';
-import { JwtPayload } from 'src/lib/types/jwt-payload';
-import { LogInDTO } from './dto/login.dto';
-import { ConfigService } from '@nestjs/config';
+import { RoleRepository } from 'src/database/repository/role.repository';
+import { JwtPayload } from 'src/lib/types/auth/jwt-payload';
 import { AuthConfig } from 'src/lib/types/configs/auth';
+import { hashPassword, validatePassword } from 'src/lib/utils/crypto';
+import { UserRepository } from '../../database/repository/user.repository';
 import { ChangePasswordDTO } from './dto/change-password.dto';
+import { LogInDTO } from './dto/login.dto';
+import { RegistrationDTO } from './dto/registration.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +24,8 @@ export class AuthService {
     private readonly roleRepo: RoleRepository,
     private readonly jwtService: JwtService,
     configService: ConfigService,
+    // TODO: Replace UserRepository with UserService
+    // private readonly userService: UserService,
   ) {
     this.authConfig = configService.get<AuthConfig>('auth');
   }

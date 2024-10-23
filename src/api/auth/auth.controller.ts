@@ -1,19 +1,19 @@
+import { Post, Body, Res, Controller, Get, Req } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { Post, Body, Res, Controller, Get, Req } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
-import { RegistrationDTO } from './dto/registration.dto';
-import { LogInDTO } from './dto/login.dto';
-import { Request, Response } from 'express';
-import { CookieUtils } from 'src/utils/cookie';
-import { CurrentUser } from 'src/lib/decorators/current-user.decorator';
 import { User } from '@prisma/client';
+import { Request, Response } from 'express';
+import { CurrentUser } from 'src/lib/decorators/current-user.decorator';
+import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
+import { CookieUtils } from 'src/lib/utils/cookie';
+import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
+import { LogInDTO } from './dto/login.dto';
+import { RegistrationDTO } from './dto/registration.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')

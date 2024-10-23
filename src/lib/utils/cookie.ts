@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
 import * as process from 'process';
+import { Request, Response } from 'express';
 
 export class CookieUtils {
   static setRefreshToken(response: Response, token: string) {

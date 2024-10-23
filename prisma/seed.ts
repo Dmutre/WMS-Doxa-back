@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { Permissions } from '../src/lib/types/presets/permission';
-import { PresetRoles } from '../src/lib/types/presets/role';
+import { Permissions } from 'src/lib/presets/permission';
+import { PresetRoles } from 'src/lib/presets/role';
 
 const prisma = new PrismaClient();
 
@@ -24,7 +24,7 @@ async function seed() {
 
   for (const role of PresetRoles) {
     const existingRole = await prisma.role.findFirst({
-      where: { name: role.name, isPreset: role.isPreset },
+      where: { name: role.name, isPreset: true },
     });
 
     if (existingRole) {
@@ -48,7 +48,7 @@ async function seed() {
       await prisma.role.create({
         data: {
           name: role.name,
-          isPreset: role.isPreset,
+          isPreset: true,
           permissions: {
             create: role.permissions.map((permissionName: string) => {
               const permission = createdPermissions.find(

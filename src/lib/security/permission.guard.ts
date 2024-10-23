@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Permissions } from '../types/presets/permission';
+import { Permissions } from 'src/lib/presets/permission';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {

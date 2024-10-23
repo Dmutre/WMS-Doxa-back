@@ -1,41 +1,91 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../database/repository/user.repository';
-import { StatusEnum, User } from '@prisma/client';
-import { PaginationOpts } from 'src/lib/types/common';
-
-export interface ListUsersParams {
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-}
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma, StatusEnum } from '@prisma/client';
+import { PrismaService } from 'src/database/prisma.service';
+import { FindUsersParams } from 'src/lib/types/users';
+import { UserMapper } from './user.mapper';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  private readonly userRepo: Prisma.UserDelegate;
 
-  async listUsers(
-    params: ListUsersParams,
-    opts: PaginationOpts,
-  ): Promise<{ data: User[]; total: number }> {
-    const { email, firstName, lastName } = params;
-
-    return await this.userRepository.findMany(
-      {
-        email: { contains: email },
-        firstName: { contains: firstName },
-        lastName: { contains: lastName },
-      },
-      opts,
-    );
+  constructor(
+    prisma: PrismaService,
+    private readonly userMapper: UserMapper,
+  ) {
+    this.userRepo = prisma.user;
   }
 
-  async fireUser(id: string): Promise<User> {
-    const user = await this.userRepository.findByOrThrow({ id });
+  async findUsers(params: FindUsersParams) {
+    const {
+      email,
+      firstName,
+      lastName,
+      status,
+      roleId,
+      page,
+      pageSize,
+      orderBy,
+      orderDirection,
+    } = params;
 
-    if (user.status === StatusEnum.FIRED) return user;
+    const where = {
+      email: { contains: email },
+      firstName: { contains: firstName },
+      lastName: { contains: lastName },
+      status,
+      roleId,
+    };
 
-    const firedUser = await this.userRepository.updateUser(id, {
-      status: StatusEnum.FIRED,
+    const users = await this.userRepo.findMany({
+      where,
+      orderBy: {
+        [orderBy]: orderDirection,
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        role: true,
+      },
+    });
+
+    const total = await this.userRepo.count({ where });
+
+    return {
+      data: users.map((user) => this.userMapper.map(user)),
+      total,
+    };
+  }
+
+  async findUser(id: string) {
+    const user = await this.userRepo.findFirst({
+      where: { id },
+      include: {
+        role: {
+          include: {
+            permissions: true,
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return this.userMapper.map(user);
+  }
+
+  async fireUser(id: string) {
+    const user = await this.findUser(id);
+
+    if (user.status === StatusEnum.FIRED)
+      throw new BadRequestException('User is already fired');
+
+    const firedUser = await this.userRepo.update({
+      where: { id },
+      data: { status: StatusEnum.FIRED },
     });
 
     return firedUser;
