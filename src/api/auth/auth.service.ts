@@ -8,11 +8,12 @@ import { RegistrationDTO } from './dto/registration.dto';
 import { hashPassword, validatePassword } from 'src/utils/crypto';
 import { RoleRepository } from 'src/database/repository/role.repository';
 import { JwtService } from '@nestjs/jwt';
-import { Role, User } from '@prisma/client';
+import { Role, RolePermissions, User } from '@prisma/client';
 import { JwtPayload } from 'src/lib/types/jwt-payload';
 import { LogInDTO } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthConfig } from 'src/lib/types/configs/auth';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +43,7 @@ export class AuthService {
   }
 
   async verifyUserByToken(token: string): Promise<User> {
-    const payload: JwtPayload = this.jwtService.verify(token);
+    const payload: JwtPayload = await this.verifyToken(token);
     return await this.userRepo.findByOrThrow({ id: payload.sub });
   }
 
@@ -52,8 +53,10 @@ export class AuthService {
     return role;
   }
 
-  private async createNewRoleFromPreseted(presetRole: Role) {
-    const { id, permissions, ...roleData } = presetRole as any;
+  private async createNewRoleFromPreseted(
+    presetRole: Role & { permissions: RolePermissions[] },
+  ) {
+    const { id, permissions, ...roleData } = presetRole;
 
     const permissionConnections = permissions.map((rolePermission) => ({
       permission: {
@@ -85,6 +88,33 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     });
     return this.getTokens(user);
+  }
+
+  private async verifyToken(token: string): Promise<JwtPayload> {
+    return await this.jwtService.verifyAsync(token).catch(() => {
+      throw new BadRequestException({ message: 'Invalid token' });
+    });
+  }
+
+  async refreshTokens(refreshToken: string) {
+    if (!refreshToken)
+      throw new BadRequestException({ message: 'Token is required' });
+    const payload: JwtPayload = await this.verifyToken(refreshToken);
+    const user = await this.userRepo.findByOrThrow({ id: payload.sub });
+    return this.getTokens(user);
+  }
+
+  async changePassword(userId: string, data: ChangePasswordDTO) {
+    const user = await this.userRepo.findByOrThrow({ id: userId });
+    await validatePassword(data.oldPassword, user.password).catch(() => {
+      throw new BadRequestException('Invalid credentials');
+    });
+    const newHashedPassword = await hashPassword(data.newPassword);
+    const updatedUser = await this.userRepo.updateUser(user.id, {
+      password: newHashedPassword,
+    });
+    delete updatedUser.password;
+    return updatedUser;
   }
 
   private getTokens(user: User): {

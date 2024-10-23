@@ -38,7 +38,11 @@ export class UserRepository {
       include: {
         role: {
           include: {
-            permissions: true,
+            permissions: {
+              include: {
+                permission: true,
+              },
+            },
           },
         },
       },
