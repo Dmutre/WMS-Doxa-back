@@ -23,7 +23,7 @@ export class AuthService {
     private readonly userRepo: UserRepository,
     private readonly roleRepo: RoleRepository,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
     this.authConfig = configService.get<AuthConfig>('auth');
   }
@@ -31,8 +31,8 @@ export class AuthService {
   async createUserProfile(data: RegistrationDTO): Promise<User> {
     await this.throwIfUserExists(data.email);
     const hashedPassword = await hashPassword(data.password);
-    const role = await this.getPresetRole(data.roleId);
     const { roleId, ...userData } = data;
+    const role = await this.getPresetRole(roleId);
     const newRole = await this.createNewRoleFromPreseted(role);
     const user = await this.userRepo.createUser({
       ...userData,

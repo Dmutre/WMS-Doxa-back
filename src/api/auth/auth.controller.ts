@@ -7,7 +7,6 @@ import {
 import { Post, Body, Res, Controller, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
-import { Permissions } from 'src/lib/types/presets/permission';
 import { RegistrationDTO } from './dto/registration.dto';
 import { LogInDTO } from './dto/login.dto';
 import { Request, Response } from 'express';

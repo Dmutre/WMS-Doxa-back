@@ -1,20 +1,21 @@
-import { Role } from '@prisma/client';
 import { Permissions } from './permission';
 
-export const PresetRoles: Role[] | any[] = [
+export interface PresetRole {
+  name: string;
+  permissions: Permissions[];
+}
+
+export const PresetRoles: PresetRole[] = [
   {
     name: 'Administrator',
-    isPreset: true,
     permissions: [Permissions.CREATE_USER],
   },
   {
     name: 'Accounter',
-    isPreset: true,
     permissions: [Permissions.CREATE_USER],
   },
   {
     name: 'Employee',
-    isPreset: true,
     permissions: [],
   },
 ];

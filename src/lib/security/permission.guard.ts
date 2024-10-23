@@ -13,7 +13,7 @@ export class PermissionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user /* : User */ = request.user; // User from prisma does not include user role entity. It is bug that should be fixed
+    const user = request.user;
     const permissions = this.reflector.get<Permissions[]>(
       'permissions',
       context.getHandler(),
