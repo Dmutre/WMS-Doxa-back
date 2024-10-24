@@ -6,6 +6,6 @@ import { UserRepository } from './repository/user.repository';
 @Global()
 @Module({
   providers: [PrismaService, UserRepository, RoleRepository],
-  exports: [UserRepository, RoleRepository],
+  exports: [UserRepository, RoleRepository, PrismaService],
 })
 export class DatabaseModule {}

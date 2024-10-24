@@ -7,14 +7,17 @@ export enum UserOrderColumn {
   UPDATED_AT = 'updatedAt',
 }
 
-export interface FindUsersParams {
+export interface FindParams<TOrderBy = string> {
+  page: number;
+  pageSize: number;
+  orderDirection: Prisma.SortOrder;
+  orderBy: TOrderBy;
+}
+
+export interface FindUsersParams extends FindParams<UserOrderColumn> {
   email?: string;
   firstName?: string;
   lastName?: string;
   status?: StatusEnum;
   roleId?: string;
-  page: number;
-  pageSize: number;
-  orderBy: UserOrderColumn;
-  orderDirection: Prisma.SortOrder;
 }
