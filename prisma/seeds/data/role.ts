@@ -1,4 +1,4 @@
-import { Permissions } from './permission';
+import { Permissions } from '../../../src/lib/types/auth/permission';
 
 export interface PresetRole {
   name: string;

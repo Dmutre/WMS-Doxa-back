@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { Permissions } from 'src/lib/presets/permission';
-import { PresetRoles } from 'src/lib/presets/role';
+import { Permissions } from '../../src/lib/types/auth/permission';
+import { PresetRoles } from './data/role';
 
 const prisma = new PrismaClient();
 

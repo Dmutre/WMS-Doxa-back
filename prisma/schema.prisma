@@ -32,7 +32,7 @@ model Role {
 model RolePermissions {
   permission      Permission      @relation(fields: [permissionId], references: [id])
   permissionId    String          @map("permission_id")
-  role            Role            @relation(fields: [roleId], references: [id])
+  role            Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId          String          @map("role_id")
   
   @@id([permissionId, roleId])
