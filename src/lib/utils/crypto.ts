@@ -3,13 +3,13 @@ import * as crypto from 'node:crypto';
 const SCRYPT_PARAMS = { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 const SCRYPT_PREFIX = '$scrypt$N=32768,r=8,p=1,maxmem=67108864$';
 
-const serializeHash = (hash, salt): string => {
+const serializeHash = (hash: Buffer, salt: Buffer) => {
   const saltString = salt.toString('base64').split('=')[0];
   const hashString = hash.toString('base64').split('=')[0];
   return `${SCRYPT_PREFIX}${saltString}$${hashString}`;
 };
 
-const parseOptions = (options) => {
+const parseOptions = (options: string) => {
   const values = [];
   const items = options.split(',');
   for (const item of items) {
@@ -19,7 +19,7 @@ const parseOptions = (options) => {
   return Object.fromEntries(values);
 };
 
-const deserializeHash = (phcString) => {
+const deserializeHash = (phcString: string) => {
   const [, name, options, salt64, hash64] = phcString.split('$');
   if (name !== 'scrypt') {
     throw new Error('Node.js crypto module only supports scrypt');
@@ -33,7 +33,7 @@ const deserializeHash = (phcString) => {
 const SALT_LEN = 32;
 const KEY_LEN = 64;
 
-export const hashPassword = (password): Promise<string> =>
+export const hashPassword = (password: string): Promise<string> =>
   new Promise((resolve, reject) => {
     crypto.randomBytes(SALT_LEN, (err, salt) => {
       if (err) {
@@ -50,10 +50,13 @@ export const hashPassword = (password): Promise<string> =>
     });
   });
 
-export const validatePassword = (password, serHash) => {
+export const validatePassword = (
+  password: string,
+  serHash: string,
+): Promise<boolean> => {
   const { params, salt, hash } = deserializeHash(serHash);
   return new Promise((resolve, reject) => {
-    const callback = (err, hashedPassword) => {
+    const callback = (err: Error, hashedPassword: Buffer) => {
       if (err) {
         reject(err);
         return;
