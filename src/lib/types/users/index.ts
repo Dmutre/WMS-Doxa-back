@@ -1,6 +1,12 @@
 import { StatusEnum } from '@prisma/client';
 import { FindParams } from '../common';
 
+export interface ShiftScheduleEntry {
+  day: number;
+  start: string;
+  end: string;
+}
+
 export enum UserOrderColumn {
   FIRST_NAME = 'firstName',
   LAST_NAME = 'lastName',
@@ -14,4 +20,25 @@ export interface FindUsersParams extends FindParams<UserOrderColumn> {
   lastName?: string;
   status?: StatusEnum;
   roleId?: string;
+}
+
+export interface ChangeRoleData {
+  roleId: string;
+}
+
+export interface CreateUserData {
+  firstName: string;
+  lastName: string;
+  password: string;
+  roleId: string;
+  email: string;
+}
+
+export interface UpdateUserData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  birthDate?: Date;
+  shiftSchedule?: ShiftScheduleEntry[];
 }

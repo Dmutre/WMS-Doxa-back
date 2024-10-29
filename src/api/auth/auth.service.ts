@@ -3,50 +3,20 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, Role, RolePermissions, User } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
-import { RoleRepository } from 'src/database/repository/role.repository';
+import { Prisma, User } from '@prisma/client';
 import { JwtPayload } from 'src/lib/types/auth/jwt-payload';
 import { AuthConfig } from 'src/lib/types/configs/auth';
 import { hashPassword, validatePassword } from 'src/lib/utils/crypto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';
-import { RegistrationDTO } from './dto/registration.dto';
 
 @Injectable()
 export class AuthService {
   private authConfig: AuthConfig;
   private readonly userRepo: Prisma.UserDelegate;
 
-  constructor(
-    private readonly roleRepo: RoleRepository,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly prisma: PrismaService,
-    // TODO: Replace UserRepository with UserService
-    // private readonly userService: UserService,
-  ) {
-    this.authConfig = configService.get<AuthConfig>('auth');
-    this.userRepo = prisma.user;
-  }
-
-  async createUserProfile(data: RegistrationDTO): Promise<User> {
-    await this.throwIfUserExists(data.email);
-    const hashedPassword = await hashPassword(data.password);
-    const { roleId, ...userData } = data;
-    const role = await this.getPresetRole(roleId);
-    const newRole = await this.createNewRoleFromPreseted(role);
-    const user = await this.userRepo.create({
-      data: {
-        ...userData,
-        password: hashedPassword,
-        role: { connect: newRole },
-      },
-    });
-    return { ...user, password: data.password };
-  }
+  constructor(private readonly jwtService: JwtService) {}
 
   async verifyUserByToken(token: string): Promise<User> {
     const payload: JwtPayload = await this.verifyToken(token);
@@ -57,41 +27,6 @@ export class AuthService {
     const user = await this.userRepo.findFirst({ where });
     if (!user) throw new NotFoundException({ message: 'User not found' });
     return user;
-  }
-
-  private async getPresetRole(roleId: string) {
-    const role = await this.roleRepo.findBy({ id: roleId, isPreset: true });
-    if (!role) throw new NotFoundException('Preset role is not found');
-    return role;
-  }
-
-  private async createNewRoleFromPreseted(
-    presetRole: Role & { permissions: RolePermissions[] },
-  ) {
-    const { id, permissions, ...roleData } = presetRole;
-
-    const permissionConnections = permissions.map((rolePermission) => ({
-      permission: {
-        connect: { id: rolePermission.permissionId },
-      },
-    }));
-
-    return await this.roleRepo.create({
-      ...roleData,
-      isPreset: false,
-      permissions:
-        permissionConnections.length > 0
-          ? { create: permissionConnections }
-          : undefined,
-    });
-  }
-
-  private async throwIfUserExists(email: string) {
-    const user = await this.userRepo.findFirst({ where: { email } });
-    if (user)
-      throw new BadRequestException({
-        message: 'User with such email already exists',
-      });
   }
 
   async login(data: LogInDTO) {

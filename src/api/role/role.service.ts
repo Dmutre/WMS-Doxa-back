@@ -24,21 +24,16 @@ export class RoleService {
   async findPerms(permissionIds?: string[]) {
     if (permissionIds) {
       if (!permissionIds.length) return { data: [] };
-
       const perms = await this.permissionRepo.findMany({
         where: { id: { in: permissionIds } },
       });
-
       if (permissionIds && perms.length !== permissionIds.length)
         throw new NotFoundException('Some permissions not found');
-
       return {
         data: perms,
       };
     }
-
     const perms = await this.permissionRepo.findMany();
-
     return {
       data: perms,
     };
@@ -46,7 +41,6 @@ export class RoleService {
 
   async findRoles(params: FindRolesParams) {
     const { name, page, pageSize, orderBy, orderDirection } = params;
-
     const where = {
       name: { contains: name },
       isPreset: true,
@@ -76,9 +70,7 @@ export class RoleService {
         },
       },
     });
-
     const total = await this.roleRepo.count({ where });
-
     return {
       data: roles,
       total,
@@ -105,9 +97,7 @@ export class RoleService {
         },
       },
     });
-
     if (!role) throw new NotFoundException('Role not found');
-
     return role;
   }
 
@@ -115,22 +105,18 @@ export class RoleService {
     const role = await this.roleRepo.findFirst({
       where: { name, isPreset: true },
     });
-
     if (role)
       throw new BadRequestException(`Role with name ${name} already exists`);
   }
 
   async createRole(data: CreateRoleData) {
     const { name, permissionIds } = data;
-
     await this.existsRole(name);
-
     const perms = await this.findPerms(permissionIds).then(({ data }) =>
       data.map((permission) => ({
         permissionId: permission.id,
       })),
     );
-
     const createdRole = await this.roleRepo.create({
       data: {
         name,
@@ -158,25 +144,18 @@ export class RoleService {
         },
       },
     });
-
     return createdRole;
   }
 
   async updateRole(id: string, data: UpdateRoleData) {
     const role = await this.findRole(id);
-
     if (!data.name && !data.permissionIds) return role;
-
     const permIds = role.permissions.map((p) => p.permissionId);
-
     const { name = role.name, permissionIds = permIds } = data;
-
     if (name !== role.name) await this.existsRole(name);
-
     const perms = await this.findPerms(
       permissionIds.filter((id) => !permIds.includes(id)),
     ).then(({ data }) => data.map(({ id }) => ({ permissionId: id })));
-
     const updatedRole = await this.roleRepo.update({
       where: { id },
       data: {
@@ -210,13 +189,11 @@ export class RoleService {
         },
       },
     });
-
     return updatedRole;
   }
 
   async forkRole(id: string, name?: string) {
     const role = await this.findRole(id);
-
     const connectPerms = role.permissions.map(({ permissionId }) => ({
       permissionId_roleId: {
         permissionId,
@@ -236,16 +213,15 @@ export class RoleService {
         permissions: true,
       },
     });
-
     return forkedRole;
   }
 
-  async deleteRole(id: string, force?: boolean) {
+  async deleteRole(id: string, isPreset = true) {
     try {
       await this.roleRepo.delete({
         where: {
           id,
-          isPreset: force ? undefined : true,
+          isPreset,
         },
       });
     } catch {

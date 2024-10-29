@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Prisma, StatusEnum } from '@prisma/client';
 import {
-  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -12,7 +11,8 @@ import {
 import { FindUsersParams, UserOrderColumn } from 'src/lib/types/users';
 
 export class FindUsersParamsDto implements FindUsersParams {
-  @IsEmail()
+  @IsString()
+  @IsNotEmpty()
   @IsOptional()
   @ApiPropertyOptional()
   email?: string;
@@ -42,12 +42,12 @@ export class FindUsersParamsDto implements FindUsersParams {
 
   @IsInt()
   @IsPositive()
-  @ApiProperty()
+  @ApiProperty({ default: 1, minimum: 1 })
   page: number;
 
   @IsInt()
   @IsPositive()
-  @ApiProperty()
+  @ApiProperty({ default: 10, minimum: 1, maximum: 100 })
   pageSize: number;
 
   @IsEnum(UserOrderColumn)

@@ -13,21 +13,11 @@ import { CookieUtils } from 'src/lib/utils/cookie';
 import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';
-import { RegistrationDTO } from './dto/registration.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  //@AuthPermissions([Permissions.CREATE_USER])
-  @Post('/create-user-profile')
-  @ApiOperation({ summary: 'Create user' })
-  @ApiOkResponse({}) // write response
-  @ApiBearerAuth()
-  createUserProfile(@Body() data: RegistrationDTO) {
-    return this.authService.createUserProfile(data);
-  }
 
   @Post('/login')
   @ApiOperation({ summary: 'Login user' })

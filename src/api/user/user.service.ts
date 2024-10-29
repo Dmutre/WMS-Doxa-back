@@ -1,22 +1,37 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, StatusEnum } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { FindUsersParams } from 'src/lib/types/users';
+import {
+  ChangeRoleData,
+  CreateUserData,
+  FindUsersParams,
+  UpdateUserData,
+} from 'src/lib/types/users';
+import { hashPassword } from 'src/lib/utils/crypto';
+import { RoleService } from '../role/role.service';
 import { UserMapper } from './user.mapper';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   private readonly userRepo: Prisma.UserDelegate;
 
   constructor(
     prisma: PrismaService,
     private readonly userMapper: UserMapper,
+    private readonly roleService: RoleService,
   ) {
     this.userRepo = prisma.user;
+  }
+
+  private async existsUser(email: string) {
+    const user = await this.userRepo.findFirst({ where: { email } });
+    return !!user;
   }
 
   async findUsers(params: FindUsersParams) {
@@ -31,7 +46,6 @@ export class UserService {
       orderBy,
       orderDirection,
     } = params;
-
     const where = {
       email: { contains: email },
       firstName: { contains: firstName },
@@ -39,7 +53,6 @@ export class UserService {
       status,
       roleId,
     };
-
     const users = await this.userRepo.findMany({
       where,
       orderBy: {
@@ -53,7 +66,6 @@ export class UserService {
     });
 
     const total = await this.userRepo.count({ where });
-
     return {
       data: users.map((user) => this.userMapper.map(user)),
       total,
@@ -66,28 +78,117 @@ export class UserService {
       include: {
         role: {
           include: {
-            permissions: true,
+            permissions: {
+              include: {
+                permission: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+              orderBy: {
+                permission: {
+                  name: Prisma.SortOrder.asc,
+                },
+              },
+            },
           },
         },
       },
     });
 
     if (!user) throw new NotFoundException('User not found');
-
     return this.userMapper.map(user);
   }
 
   async fireUser(id: string) {
     const user = await this.findUser(id);
-
     if (user.status === StatusEnum.FIRED)
       throw new BadRequestException('User is already fired');
-
     const firedUser = await this.userRepo.update({
       where: { id },
       data: { status: StatusEnum.FIRED },
+      include: {
+        role: true,
+      },
     });
+    return this.userMapper.map(firedUser);
+  }
 
-    return firedUser;
+  async restoreUser(id: string) {
+    const user = await this.findUser(id);
+    if (user.status !== StatusEnum.FIRED)
+      throw new BadRequestException('User is not fired');
+    const restoredUser = await this.userRepo.update({
+      where: { id },
+      data: { status: StatusEnum.ACTIVE },
+      include: {
+        role: true,
+      },
+    });
+    return this.userMapper.map(restoredUser);
+  }
+
+  async changeRole(id: string, data: ChangeRoleData) {
+    const { roleId } = data;
+    const user = await this.findUser(id);
+    const curRole = user.role;
+    const newRole = await this.roleService.forkRole(roleId);
+    const updatedUser = await this.userRepo.update({
+      where: { id },
+      data: { role: { connect: { id: newRole.id } } },
+      include: {
+        role: true,
+      },
+    });
+    await this.roleService.deleteRole(curRole.id, false).catch(() => {
+      this.logger.warn({
+        msg: 'Skipped changed role cleanup. Role cannot be deleted',
+        ctx: {
+          userId: id,
+          curRoleId: curRole.id,
+          newRoleId: newRole.id,
+        },
+      });
+    });
+    return this.userMapper.map(updatedUser);
+  }
+
+  async createUser(data: CreateUserData) {
+    const { roleId, ...userData } = data;
+    const exists = await this.existsUser(userData.email);
+    if (exists) throw new BadRequestException('Email is already taken');
+    const role = await this.roleService.forkRole(roleId);
+    const hashedPassword = await hashPassword(userData.password);
+    const user = await this.userRepo.create({
+      data: {
+        ...userData,
+        password: hashedPassword,
+        role: { connect: { id: role.id } },
+      },
+      include: {
+        role: true,
+      },
+    });
+    return this.userMapper.map(user);
+  }
+
+  async updateUser(id: string, data: UpdateUserData) {
+    const { email, shiftSchedule, ...userData } = data;
+    if (email) {
+      const exists = await this.existsUser(email);
+      if (exists) throw new BadRequestException('Email is already taken');
+    }
+    const updatedUser = await this.userRepo.update({
+      where: { id },
+      data: {
+        ...userData,
+        shiftSchedule: shiftSchedule && JSON.stringify(shiftSchedule),
+      },
+      include: {
+        role: true,
+      },
+    });
+    return this.userMapper.map(updatedUser);
   }
 }

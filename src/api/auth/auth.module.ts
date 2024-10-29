@@ -1,7 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { DatabaseModule } from 'src/database/database.module';
 import { AuthConfig } from '../../lib/types/configs/auth';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
@@ -19,11 +18,8 @@ import { AuthService } from './auth.service';
           signOptions: { expiresIn: authConfig.accessTtl },
         };
       },
-      imports: [ConfigModule],
       inject: [ConfigService],
     }),
-    ConfigModule,
-    DatabaseModule,
     UserModule,
   ],
   controllers: [AuthController],
