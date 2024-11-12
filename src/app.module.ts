@@ -4,6 +4,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './api/auth/auth.module';
 import { RoleModule } from './api/role/role.module';
 import { UserModule } from './api/user/user.module';
+import { WarehouseModule } from './api/warehouse/warehouse.module';
 import { DatabaseModule } from './database/database.module';
 import authConfig from './lib/configs/auth.config';
 import serverConfig from './lib/configs/server.config';
@@ -19,6 +20,7 @@ import serverConfig from './lib/configs/server.config';
     AuthModule,
     UserModule,
     RoleModule,
+    WarehouseModule,
   ],
   controllers: [],
   providers: [],
