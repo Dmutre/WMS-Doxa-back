@@ -34,6 +34,6 @@ export class FindRolesParamsDto implements FindRolesParams {
 
   @IsEnum(Prisma.SortOrder)
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: Prisma.SortOrder })
   orderDirection: Prisma.SortOrder = Prisma.SortOrder.asc;
 }

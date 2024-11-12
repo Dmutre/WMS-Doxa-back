@@ -3,8 +3,10 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
+import { PrismaService } from 'src/database/prisma.service';
 import { JwtPayload } from 'src/lib/types/auth/jwt-payload';
 import { AuthConfig } from 'src/lib/types/configs/auth';
 import { hashPassword, validatePassword } from 'src/lib/utils/crypto';
@@ -16,7 +18,14 @@ export class AuthService {
   private authConfig: AuthConfig;
   private readonly userRepo: Prisma.UserDelegate;
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
+    prisma: PrismaService,
+  ) {
+    this.userRepo = prisma.user;
+    this.authConfig = this.config.get<AuthConfig>('auth');
+  }
 
   async verifyUserByToken(token: string): Promise<User> {
     const payload: JwtPayload = await this.verifyToken(token);

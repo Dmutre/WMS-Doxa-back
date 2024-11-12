@@ -57,6 +57,6 @@ export class FindUsersParamsDto implements FindUsersParams {
 
   @IsEnum(Prisma.SortOrder)
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: Prisma.SortOrder })
   orderDirection: Prisma.SortOrder = Prisma.SortOrder.asc;
 }
