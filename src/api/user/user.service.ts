@@ -53,19 +53,20 @@ export class UserService {
       status,
       roleId,
     };
-    const users = await this.userRepo.findMany({
-      where,
-      orderBy: {
-        [orderBy]: orderDirection,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: {
-        role: true,
-      },
-    });
-
-    const total = await this.userRepo.count({ where });
+    const [users, total] = await Promise.all([
+      this.userRepo.findMany({
+        where,
+        orderBy: {
+          [orderBy]: orderDirection,
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          role: true,
+        },
+      }),
+      this.userRepo.count({ where }),
+    ]);
     return {
       data: users.map((user) => this.userMapper.map(user)),
       total,

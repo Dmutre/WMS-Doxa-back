@@ -45,32 +45,33 @@ export class RoleService {
       name: { contains: name },
       isPreset: true,
     };
-
-    const roles = await this.roleRepo.findMany({
-      where,
-      orderBy: {
-        [orderBy]: orderDirection,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: {
-        permissions: {
-          include: {
-            permission: {
-              select: {
-                name: true,
+    const [roles, total] = await Promise.all([
+      this.roleRepo.findMany({
+        where,
+        orderBy: {
+          [orderBy]: orderDirection,
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          permissions: {
+            include: {
+              permission: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              permission: {
+                name: Prisma.SortOrder.asc,
               },
             },
           },
-          orderBy: {
-            permission: {
-              name: Prisma.SortOrder.asc,
-            },
-          },
         },
-      },
-    });
-    const total = await this.roleRepo.count({ where });
+      }),
+      this.roleRepo.count({ where }),
+    ]);
     return {
       data: roles,
       total,
