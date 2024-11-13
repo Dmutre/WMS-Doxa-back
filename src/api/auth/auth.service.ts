@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -40,9 +41,9 @@ export class AuthService {
 
   async login(data: LogInDTO) {
     const user = await this.findByOrThrowUser({ email: data.email });
-    await validatePassword(data.password, user.password).catch(() => {
-      throw new BadRequestException('Invalid credentials');
-    });
+    const isValid = await validatePassword(data.password, user.password);
+    if (!isValid)
+      throw new UnauthorizedException({ message: 'Invalid credentials' });
     return this.getTokens(user);
   }
 

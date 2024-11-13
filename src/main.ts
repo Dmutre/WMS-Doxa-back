@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
@@ -10,6 +11,8 @@ import { ServerConfig } from './lib/types/configs/server';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const express: ExpressAdapter = app.getHttpAdapter().getInstance();
+  express.set('trust proxy', true);
   const logger = app.get(Logger);
   app.useLogger(logger);
   app.use(cookieParser());
@@ -36,6 +39,10 @@ async function bootstrap() {
     .setTitle('API WMS Doxa docs')
     .setDescription('WMS Doxa API documentation')
     .setVersion('0.1')
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

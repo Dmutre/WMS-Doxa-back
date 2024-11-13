@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { FindUserActionsParams } from 'src/lib/types/journal/user-action';
+import {
+  CreateUserActionData,
+  FindUserActionsParams,
+} from 'src/lib/types/journal/user-action';
 
 @Injectable()
 export class JournalService {
@@ -58,7 +61,7 @@ export class JournalService {
     };
   }
 
-  async createUserAction(data: Prisma.UserActionCreateInput) {
+  async createUserAction(data: CreateUserActionData) {
     return await this.userActionRepo.create({ data });
   }
 }
