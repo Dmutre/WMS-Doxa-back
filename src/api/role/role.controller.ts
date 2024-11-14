@@ -12,14 +12,13 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserAction } from 'src/lib/decorators/user-action.decorator';
 import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
+import { Permissions } from 'src/lib/types/auth/permission';
 import { Action } from 'src/lib/types/journal/user-action';
 import { CreateRoleDataDto } from './dto/create-role';
 import { FindRolesParamsDto } from './dto/find-roles.dto';
 import { UpdateRoleDataDto } from './dto/update-role';
 import { RoleService } from './role.service';
 
-// TODO: Add authorization and permission guards
-//       Describe response interfaces
 @Controller()
 @ApiTags('Roles')
 @ApiBearerAuth()
@@ -27,7 +26,7 @@ export class RoleConstroller {
   constructor(private readonly roleService: RoleService) {}
 
   @UserAction(Action.FIND_PERMISSIONS)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.FIND_ROLE])
   @Get('permissions')
   @ApiOperation({ summary: 'Find list of all permissions' })
   async findPerms() {
@@ -35,7 +34,7 @@ export class RoleConstroller {
   }
 
   @UserAction(Action.FIND_ROLES)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.FIND_ROLE])
   @Get('roles')
   @ApiOperation({ summary: 'Find list of preset roles' })
   async findRoles(@Query() params: FindRolesParamsDto) {
@@ -43,7 +42,7 @@ export class RoleConstroller {
   }
 
   @UserAction(Action.CREATE_ROLE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.CREATE_ROLE])
   @Post('roles')
   @ApiOperation({ summary: 'Create new preset role' })
   async createRole(@Body() data: CreateRoleDataDto) {
@@ -51,7 +50,7 @@ export class RoleConstroller {
   }
 
   @UserAction(Action.UPDATE_ROLE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.UPDATE_ROLE])
   @Put('roles/:id')
   @ApiOperation({ summary: 'Update preset role by id' })
   async updateRole(@Param('id') id: string, @Body() data: UpdateRoleDataDto) {
@@ -59,7 +58,7 @@ export class RoleConstroller {
   }
 
   @UserAction(Action.DELETE_ROLE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.DELETE_ROLE])
   @Delete('roles/:id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete preset role by id' })

@@ -1,6 +1,12 @@
 import { StatusEnum } from '@prisma/client';
 import { FindParams } from '../common';
 
+export interface UserCredentials {
+  id: string;
+  email: string;
+  password: string;
+}
+
 export interface ShiftScheduleEntry {
   day: number;
   start: string;
@@ -41,4 +47,5 @@ export interface UpdateUserData {
   phone?: string;
   birthDate?: Date;
   shiftSchedule?: ShiftScheduleEntry[];
+  password?: string;
 }

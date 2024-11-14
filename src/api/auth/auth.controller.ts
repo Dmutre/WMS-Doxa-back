@@ -1,14 +1,17 @@
-import { Post, Body, Res, Controller, Get, Req } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiOkResponse,
-} from '@nestjs/swagger';
-import { User } from '@prisma/client';
+  Post,
+  Body,
+  Res,
+  Controller,
+  Get,
+  Req,
+  HttpCode,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { CurrentUser } from 'src/lib/decorators/current-user.decorator';
+import { ClsService } from 'nestjs-cls';
 import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
+import { AppContext } from 'src/lib/types/common';
 import { CookieUtils } from 'src/lib/utils/cookie';
 import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
@@ -17,11 +20,13 @@ import { LogInDTO } from './dto/login.dto';
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cls: ClsService<AppContext>,
+  ) {}
 
   @Post('/login')
   @ApiOperation({ summary: 'Login user' })
-  @ApiOkResponse({}) // write response
   async login(@Body() data: LogInDTO, @Res() response: Response) {
     const tokens = await this.authService.login(data);
     CookieUtils.setRefreshToken(response, tokens.refreshToken);
@@ -30,7 +35,6 @@ export class AuthController {
 
   @Post('/refresh')
   @ApiOperation({ summary: 'Refresh tokens if refresh token is still valid' })
-  @ApiOkResponse({}) // write response
   async refreshToken(@Req() request: Request, @Res() response: Response) {
     const token = CookieUtils.getRefreshToken(request);
     const tokens = await this.authService.refreshTokens(token);
@@ -41,21 +45,19 @@ export class AuthController {
   @AuthPermissions([])
   @Post('/change-password')
   @ApiOperation({ summary: 'Change password' })
-  @ApiOkResponse({}) // write response
-  async changePassword(
-    @CurrentUser() user: User,
-    @Body() data: ChangePasswordDTO,
-  ) {
-    return await this.authService.changePassword(user.id, data);
+  @ApiBearerAuth()
+  @HttpCode(204)
+  async changePassword(@Body() data: ChangePasswordDTO) {
+    const userId = this.cls.get('user.id');
+    await this.authService.changePassword(userId, data);
   }
 
   @AuthPermissions([])
   @Get('/me')
   @ApiOperation({ summary: 'Get current user from token' })
-  @ApiOkResponse({}) // write response
   @ApiBearerAuth()
-  getCurrentUser(@CurrentUser() user: User) {
-    delete user.password;
-    return user;
+  async me() {
+    const userId = this.cls.get('user.id');
+    return await this.authService.me(userId);
   }
 }

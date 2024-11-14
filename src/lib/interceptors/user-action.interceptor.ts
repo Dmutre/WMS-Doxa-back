@@ -7,8 +7,10 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
+import { ClsService } from 'nestjs-cls';
 import { Observable, tap } from 'rxjs';
 import { JournalService } from 'src/api/journal/journal.service';
+import { AppContext } from '../types/common';
 import { UserActionContext } from '../types/journal/user-action';
 
 @Injectable()
@@ -18,6 +20,7 @@ export class UserActionInterceptor implements NestInterceptor {
   constructor(
     private readonly journalService: JournalService,
     private readonly reflector: Reflector,
+    private readonly cls: ClsService<AppContext>,
   ) {}
 
   intercept(ctx: ExecutionContext, next: CallHandler): Observable<unknown> {
@@ -30,16 +33,18 @@ export class UserActionInterceptor implements NestInterceptor {
 
     if (!userActionCtx) return next.handle();
 
-    const { user, ip, body, params, query } = request;
+    const { ip, body, params, query } = request;
 
     const payload = { ...body, ...params, ...query };
+
+    const userId = this.cls.get('user.id');
 
     return next.handle().pipe(
       tap(() => {
         this.journalService
           .createUserAction({
             ip,
-            userId: user?.id ?? null,
+            userId,
             action: userActionCtx.action,
             payload,
           })

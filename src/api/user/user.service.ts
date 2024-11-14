@@ -11,6 +11,7 @@ import {
   CreateUserData,
   FindUsersParams,
   UpdateUserData,
+  UserCredentials,
 } from 'src/lib/types/users';
 import { hashPassword } from 'src/lib/utils/crypto';
 import { RoleService } from '../role/role.service';
@@ -74,7 +75,7 @@ export class UserService {
   }
 
   async findUser(id: string) {
-    const user = await this.userRepo.findFirst({
+    const user = await this.userRepo.findUnique({
       where: { id },
       include: {
         role: {
@@ -97,9 +98,22 @@ export class UserService {
         },
       },
     });
-
     if (!user) throw new NotFoundException('User not found');
     return this.userMapper.map(user);
+  }
+
+  async findUserCredentials(
+    where: Prisma.UserWhereUniqueInput,
+  ): Promise<UserCredentials> {
+    const creds = await this.userRepo.findUnique({
+      where,
+      select: {
+        id: true,
+        email: true,
+        password: true,
+      },
+    });
+    return creds;
   }
 
   async fireUser(id: string) {
@@ -144,8 +158,8 @@ export class UserService {
     });
     await this.roleService.deleteRole(curRole.id, false).catch(() => {
       this.logger.warn({
-        msg: 'Skipped changed role cleanup. Role cannot be deleted',
-        ctx: {
+        message: 'Skipped changed role cleanup. Role cannot be deleted',
+        context: {
           userId: id,
           curRoleId: curRole.id,
           newRoleId: newRole.id,

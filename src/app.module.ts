@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './api/auth/auth.module';
 import { JournalModule } from './api/journal/journal.module';
@@ -17,6 +18,10 @@ import { UserActionInterceptor } from './lib/interceptors/user-action.intercepto
     ConfigModule.forRoot({
       isGlobal: true,
       load: [serverConfig, authConfig],
+    }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
     }),
     LoggerModule.forRoot(),
     DatabaseModule,

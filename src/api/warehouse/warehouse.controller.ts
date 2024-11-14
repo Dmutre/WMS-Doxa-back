@@ -8,11 +8,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User, Warehouse } from '@prisma/client';
-import { CurrentUser } from 'src/lib/decorators/current-user.decorator';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Warehouse } from '@prisma/client';
+import { ClsService } from 'nestjs-cls';
 import { UserAction } from 'src/lib/decorators/user-action.decorator';
 import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
+import { Permissions } from 'src/lib/types/auth/permission';
+import { AppContext } from 'src/lib/types/common';
 import { Action } from 'src/lib/types/journal/user-action';
 import { ConnectUserToWarehouseDTO } from './dto/connect-user.to-warehouse.dto';
 import { CreateWarehouseDTO } from './dto/create-warehouse.dto';
@@ -20,15 +22,17 @@ import { FindWarehousesParamsDTO } from './dto/find-warehouses.dto';
 import { UpdateWarehouseDTO } from './dto/update-warehouse.dto';
 import { WarehouseService } from './warehouse.service';
 
-// TODO: Add authorization and permission guards
-//       Describe response interfaces
 @ApiTags('Warehouse')
 @Controller('warehouse')
+@ApiBearerAuth()
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(
+    private readonly warehouseService: WarehouseService,
+    private readonly cls: ClsService<AppContext>,
+  ) {}
 
   @UserAction(Action.CREATE_WEREHOUSE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.CREATE_WAREHOUSE])
   @Post()
   @ApiOperation({ summary: 'Create a new warehouse' })
   async createWarehouse(
@@ -38,7 +42,7 @@ export class WarehouseController {
   }
 
   @UserAction(Action.FIND_WEREHOUSE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.FIND_WAREHOUSE])
   @Get('/:id')
   @ApiOperation({ summary: 'Get warehouse by ID' })
   async getWarehouseById(@Param('id') id: string): Promise<Warehouse> {
@@ -46,7 +50,7 @@ export class WarehouseController {
   }
 
   @UserAction(Action.UPDATE_WEREHOUSE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.UPDATE_WAREHOUSE])
   @Put('/:id')
   @ApiOperation({ summary: 'Update warehouse by ID' })
   async updateWarehouse(
@@ -57,7 +61,7 @@ export class WarehouseController {
   }
 
   @UserAction(Action.DELETE_WEREHOUSE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.DELETE_WAREHOUSE])
   @Delete('/:id')
   @ApiOperation({ summary: 'Delete warehouse by ID' })
   async deleteWarehouse(@Param('id') id: string): Promise<{ message: string }> {
@@ -65,7 +69,7 @@ export class WarehouseController {
   }
 
   @UserAction(Action.FIND_WEREHOUSES)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.FIND_WAREHOUSE])
   @Get()
   @ApiOperation({ summary: 'Get all warehouses' })
   async getAllWarehouses(
@@ -75,7 +79,7 @@ export class WarehouseController {
   }
 
   @UserAction(Action.CONNECT_USER_TO_WEREHOUSE)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.CONNECT_USER_TO_WEREHOUSE])
   @Post('/user/connect')
   @ApiOperation({ summary: 'Connect user to warehouse' })
   async connectUserToWarehouse(@Body() data: ConnectUserToWarehouseDTO) {
@@ -83,11 +87,12 @@ export class WarehouseController {
   }
 
   @UserAction(Action.GET_USER_WEREHOUSES)
-  @AuthPermissions([])
+  @AuthPermissions([Permissions.FIND_WAREHOUSE])
   @ApiOperation({
     summary: 'Get user warehouses (warehouses to which user is connected)',
   })
-  async getUserWarehouses(@CurrentUser() user: User): Promise<Warehouse[]> {
-    return await this.warehouseService.getWarehousesForUser(user.id);
+  async getUserWarehouses(): Promise<Warehouse[]> {
+    const userId = this.cls.get('user.id');
+    return await this.warehouseService.getWarehousesForUser(userId);
   }
 }
