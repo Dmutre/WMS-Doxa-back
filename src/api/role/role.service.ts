@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -228,5 +229,14 @@ export class RoleService {
     } catch {
       throw new NotFoundException('Role not found');
     }
+  }
+
+  async findSuperuserRole() {
+    const role = await this.roleRepo.findFirst({
+      where: { name: 'Superuser', isPreset: true },
+    });
+    if (!role)
+      throw new InternalServerErrorException('Superuser role not found');
+    return role;
   }
 }

@@ -7,7 +7,7 @@ export interface PresetRole {
 
 export const PresetRoles: PresetRole[] = [
   {
-    name: 'Administrator',
+    name: 'Superuser',
     permissions: [...Object.values(Permissions)],
   },
 ];

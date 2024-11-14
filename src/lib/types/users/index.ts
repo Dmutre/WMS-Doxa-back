@@ -40,6 +40,13 @@ export interface CreateUserData {
   email: string;
 }
 
+export interface CreateSuperUserData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
 export interface UpdateUserData {
   firstName?: string;
   lastName?: string;

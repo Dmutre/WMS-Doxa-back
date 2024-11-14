@@ -8,6 +8,7 @@ import { Prisma, StatusEnum } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 import {
   ChangeRoleData,
+  CreateSuperUserData,
   CreateUserData,
   FindUsersParams,
   UpdateUserData,
@@ -205,5 +206,10 @@ export class UserService {
       },
     });
     return this.userMapper.map(updatedUser);
+  }
+
+  async createSuperUser(data: CreateSuperUserData) {
+    const role = await this.roleService.findSuperuserRole();
+    await this.createUser({ ...data, roleId: role.id });
   }
 }
