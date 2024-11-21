@@ -4,6 +4,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './api/auth/auth.module';
+import { BatchModule } from './api/batch/batch.module';
+import { ItemModule } from './api/items/item.module';
 import { JournalModule } from './api/journal/journal.module';
 import { RoleModule } from './api/role/role.module';
 import { UserModule } from './api/user/user.module';
@@ -30,6 +32,8 @@ import { UserActionInterceptor } from './lib/interceptors/user-action.intercepto
     RoleModule,
     JournalModule,
     WarehouseModule,
+    BatchModule,
+    ItemModule,
   ],
   controllers: [],
   providers: [
