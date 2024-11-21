@@ -42,6 +42,16 @@ export enum Action {
   DELETE_WEREHOUSE = 'deleteWerehouse',
   CONNECT_USER_TO_WEREHOUSE = 'connectUserToWerehouse',
   GET_USER_WEREHOUSES = 'getUserWerehouses',
+  CREATE_BATCH = 'createBatch',
+  UPDATE_BATCH = 'updateBatch',
+  FIND_BATCH = 'findBatch',
+  FIND_BATCHES = 'findBatches',
+  DELETE_BATCH = 'deleteBatch',
+  CREATE_ITEM = 'createItem',
+  UPDATE_ITEM = 'updateItem',
+  DELETE_ITEM = 'deleteItem',
+  FIND_ITEM = 'findItem',
+  FIND_ITEMS = 'findItems',
 }
 
 export interface UserActionContext {
