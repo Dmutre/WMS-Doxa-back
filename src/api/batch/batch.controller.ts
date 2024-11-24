@@ -77,8 +77,14 @@ export class BatchController {
   @AuthPermissions([Permissions.DELETE_BATCH])
   @Delete('/:id')
   @ApiOperation({ summary: 'Delete batch by ID' })
-  @ApiOkResponse({
-    type: BatchDto,
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
   })
   async deleteBatch(@Param('id') id: string): Promise<{ message: string }> {
     return await this.batchService.deleteBatch(id);

@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   Post,
   Put,
@@ -103,17 +102,21 @@ export class RoleConstroller {
   @UserAction(Action.DELETE_ROLE)
   @AuthPermissions([Permissions.DELETE_ROLE])
   @Delete('roles/:id')
-  @HttpCode(204)
   @ApiOperation({ summary: 'Delete preset role by id' })
   @ApiResponse({
-    status: 204,
-    description: 'Role deleted',
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
   })
   @ApiResponse({
     status: 404,
     description: 'Role not found',
   })
   async deleteRole(@Param('id') id: string) {
-    await this.roleService.deleteRole(id);
+    return await this.roleService.deleteRole(id);
   }
 }

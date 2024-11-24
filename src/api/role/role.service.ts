@@ -226,6 +226,10 @@ export class RoleService {
           isPreset,
         },
       });
+
+      return {
+        message: 'Role deleted successfully',
+      };
     } catch {
       throw new NotFoundException('Role not found');
     }

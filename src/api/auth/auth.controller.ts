@@ -71,10 +71,15 @@ export class AuthController {
   @Post('/change-password')
   @ApiOperation({ summary: 'Change password' })
   @ApiBearerAuth()
-  @HttpCode(204)
+  @HttpCode(200)
   @ApiResponse({
-    status: 204,
-    description: 'Password changed',
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
   })
   @ApiResponse({
     status: 401,
@@ -83,6 +88,7 @@ export class AuthController {
   async changePassword(@Body() data: ChangePasswordDTO) {
     const userId = this.cls.get('user.id');
     await this.authService.changePassword(userId, data);
+    return { message: 'Password changed successfully' };
   }
 
   @AuthPermissions([])
