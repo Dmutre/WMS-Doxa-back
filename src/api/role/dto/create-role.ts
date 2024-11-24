@@ -11,7 +11,7 @@ import { CreateRoleData } from 'src/lib/types/roles';
 export class CreateRoleDataDto implements CreateRoleData {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ description: 'Назва ролі користувача' })
   @MinLength(3)
   @MaxLength(255)
   name: string;

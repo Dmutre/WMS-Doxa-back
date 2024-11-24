@@ -79,24 +79,7 @@ export class UserService {
     const user = await this.userRepo.findUnique({
       where: { id },
       include: {
-        role: {
-          include: {
-            permissions: {
-              include: {
-                permission: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-              orderBy: {
-                permission: {
-                  name: Prisma.SortOrder.asc,
-                },
-              },
-            },
-          },
-        },
+        role: true,
       },
     });
     if (!user) throw new NotFoundException('User not found');

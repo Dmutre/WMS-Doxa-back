@@ -36,37 +36,46 @@ export class ShiftScheduleEntryDto implements ShiftScheduleEntry {
 
 export class UpdateUserDataDto implements UpdateUserData {
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Ім’я користувача' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   firstName?: string;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Прізвище користувача' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   lastName?: string;
 
   @IsOptional()
-  @ApiPropertyOptional({ example: 'example@mail.com' })
+  @ApiPropertyOptional({
+    example: 'example@mail.com',
+    description: 'Email користувача',
+  })
   @IsEmail()
   @MaxLength(255)
   email?: string;
 
   @IsOptional()
-  @ApiPropertyOptional({ example: '+380981122334' })
+  @ApiPropertyOptional({
+    example: '+380981122334',
+    description: 'Номер телефону користувача',
+  })
   @IsPhoneNumber()
   phone?: string;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Дата народження користувача' })
   @IsDate()
   birthDate?: Date;
 
   @IsOptional()
-  @ApiPropertyOptional({ type: [ShiftScheduleEntryDto] })
+  @ApiPropertyOptional({
+    type: [ShiftScheduleEntryDto],
+    description: 'Графік роботи користувача',
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ShiftScheduleEntryDto)

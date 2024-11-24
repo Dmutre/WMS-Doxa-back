@@ -7,12 +7,19 @@ import {
   Req,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ClsService } from 'nestjs-cls';
 import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
 import { AppContext } from 'src/lib/types/common';
 import { CookieUtils } from 'src/lib/utils/cookie';
+import { UserDto } from '../user/dto/user.dto';
 import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';
@@ -27,6 +34,15 @@ export class AuthController {
 
   @Post('/login')
   @ApiOperation({ summary: 'Login user' })
+  @HttpCode(200)
+  @ApiOkResponse({
+    description: 'User logged in',
+    schema: { type: 'object', properties: { token: { type: 'string' } } },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+  })
   async login(@Body() data: LogInDTO, @Res() response: Response) {
     const tokens = await this.authService.login(data);
     CookieUtils.setRefreshToken(response, tokens.refreshToken);
@@ -35,6 +51,15 @@ export class AuthController {
 
   @Post('/refresh')
   @ApiOperation({ summary: 'Refresh tokens if refresh token is still valid' })
+  @HttpCode(200)
+  @ApiOkResponse({
+    description: 'User logged in',
+    schema: { type: 'object', properties: { token: { type: 'string' } } },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid token',
+  })
   async refreshToken(@Req() request: Request, @Res() response: Response) {
     const token = CookieUtils.getRefreshToken(request);
     const tokens = await this.authService.refreshTokens(token);
@@ -47,6 +72,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Change password' })
   @ApiBearerAuth()
   @HttpCode(204)
+  @ApiResponse({
+    status: 204,
+    description: 'Password changed',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+  })
   async changePassword(@Body() data: ChangePasswordDTO) {
     const userId = this.cls.get('user.id');
     await this.authService.changePassword(userId, data);
@@ -56,6 +89,10 @@ export class AuthController {
   @Get('/me')
   @ApiOperation({ summary: 'Get current user from token' })
   @ApiBearerAuth()
+  @ApiOkResponse({
+    status: 200,
+    type: UserDto,
+  })
   async me() {
     const userId = this.cls.get('user.id');
     return await this.authService.me(userId);

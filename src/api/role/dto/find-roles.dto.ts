@@ -14,7 +14,7 @@ export class FindRolesParamsDto implements FindRolesParams {
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за назвою ролі користувача' })
   name?: string;
 
   @IsInt()

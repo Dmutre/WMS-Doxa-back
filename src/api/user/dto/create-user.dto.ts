@@ -9,19 +9,19 @@ import {
 import { CreateUserData } from 'src/lib/types/users';
 
 export class CreateUserDataDto implements CreateUserData {
-  @ApiProperty()
+  @ApiProperty({ description: "Ім'я користувача" })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   firstName: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Прізвище користувача' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   lastName: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Потужний пароль користувача' })
   @IsString()
   @IsNotEmpty()
   @IsStrongPassword({
@@ -34,12 +34,15 @@ export class CreateUserDataDto implements CreateUserData {
   @MaxLength(64)
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'ID ролі користувача' })
   @IsString()
   @IsNotEmpty()
   roleId: string;
 
-  @ApiProperty({ example: 'example@mail.com' })
+  @ApiProperty({
+    example: 'example@mail.com',
+    description: 'Email користувача',
+  })
   @IsEmail()
   @MaxLength(255)
   email: string;

@@ -10,6 +10,7 @@ import {
   IsString,
 } from 'class-validator';
 import {
+  Action,
   FindUserActionsParams,
   UserActionOrderColumn,
 } from 'src/lib/types/journal/user-action';
@@ -18,30 +19,30 @@ export class FindUserActionsParamsDto implements FindUserActionsParams {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'IP адрес користувача' })
   ip?: string;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'ID користувача' })
   userId?: string;
 
   @IsDate()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Дата від здійснення дії' })
   createdAtFrom?: Date;
 
   @IsDate()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Дата до здійснення дії' })
   createdAtTo?: Date;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiPropertyOptional()
-  action?: string;
+  @ApiPropertyOptional({ description: 'Здійснена дія', enum: Action })
+  action?: Action;
 
   @IsInt()
   @IsPositive()

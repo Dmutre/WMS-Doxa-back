@@ -9,30 +9,30 @@ import {
 import { CreateWarehouseData } from 'src/lib/types/warehouse';
 
 export class CreateWarehouseDTO implements CreateWarehouseData {
-  @ApiProperty({ description: 'The name of the warehouse' })
+  @ApiProperty({ description: 'Назва складу' })
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'The type of the warehouse' })
+  @ApiProperty({ description: 'Тип складу' })
   @IsString()
   type: string;
 
-  @ApiProperty({ description: 'The address of the warehouse' })
+  @ApiProperty({ description: 'Адреса складу' })
   @IsString()
   address: string;
 
-  @ApiProperty({ description: 'Coordinates of the warehouse', required: false })
+  @ApiProperty({ description: 'Координати складу', required: false })
   @IsOptional()
   @IsString()
   coordinates?: string;
 
-  @ApiProperty({ description: 'Notes about the warehouse', required: false })
+  @ApiProperty({ description: 'Примітки про склад', required: false })
   @IsOptional()
   @IsString()
   notes?: string;
 
   @ApiProperty({
-    description: 'The area of the warehouse in square meters',
+    description: 'Площа складу в квадратних метрах',
     required: false,
   })
   @IsOptional()
@@ -41,7 +41,7 @@ export class CreateWarehouseDTO implements CreateWarehouseData {
   area?: number;
 
   @ApiProperty({
-    description: 'Whether the warehouse is active',
+    description: 'Чи активний склад',
     default: true,
     required: false,
   })
@@ -49,7 +49,7 @@ export class CreateWarehouseDTO implements CreateWarehouseData {
   @IsBoolean()
   isActive?: boolean = true;
 
-  @ApiProperty({ description: 'Photo URL of the warehouse', required: false })
+  @ApiProperty({ description: 'URL фото складу', required: false })
   @IsOptional()
   @IsString()
   photo?: string;

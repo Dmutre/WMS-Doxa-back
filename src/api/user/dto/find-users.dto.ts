@@ -14,30 +14,30 @@ export class FindUsersParamsDto implements FindUsersParams {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за email користувача' })
   email?: string;
 
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за ім’ям користувача' })
   firstName?: string;
 
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за прізвищем користувача' })
   lastName?: string;
 
   @IsEnum(StatusEnum)
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: StatusEnum, description: 'Статус користувача' })
   status?: StatusEnum;
 
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'ID ролі користувача' })
   roleId: string;
 
   @IsInt()

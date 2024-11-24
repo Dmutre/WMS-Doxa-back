@@ -18,18 +18,18 @@ export class FindWarehousesParamsDTO implements FindWarehousesParams {
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за назвою складу' })
   name?: string;
 
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Пошук за типом складу' })
   type?: string;
 
   @IsBoolean()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Чи активний склад' })
   isActive?: boolean;
 
   @IsInt()

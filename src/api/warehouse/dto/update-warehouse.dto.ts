@@ -9,23 +9,23 @@ import {
 import { UpdateWarehouseData } from 'src/lib/types/warehouse';
 
 export class UpdateWarehouseDTO implements UpdateWarehouseData {
-  @ApiPropertyOptional({ description: 'The name of the warehouse' })
+  @ApiPropertyOptional({ description: 'Назва складу' })
   @IsOptional()
   @IsString()
   name?: string;
 
-  @ApiPropertyOptional({ description: 'The type of the warehouse' })
+  @ApiPropertyOptional({ description: 'Тип складу' })
   @IsOptional()
   @IsString()
   type?: string;
 
-  @ApiPropertyOptional({ description: 'The address of the warehouse' })
+  @ApiPropertyOptional({ description: 'Адреса складу' })
   @IsOptional()
   @IsString()
   address?: string;
 
   @ApiPropertyOptional({
-    description: 'Coordinates of the warehouse',
+    description: 'Координати складу',
     required: false,
   })
   @IsOptional()
@@ -33,7 +33,7 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   coordinates?: string;
 
   @ApiPropertyOptional({
-    description: 'Notes about the warehouse',
+    description: 'Примітки про склад',
     required: false,
   })
   @IsOptional()
@@ -41,7 +41,7 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'The area of the warehouse in square meters',
+    description: 'Площа складу в квадратних метрах',
     required: false,
   })
   @IsOptional()
@@ -50,7 +50,7 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   area?: number;
 
   @ApiPropertyOptional({
-    description: 'Whether the warehouse is active',
+    description: 'Чи активний склад',
     default: true,
   })
   @IsOptional()
@@ -58,7 +58,7 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   isActive?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Photo URL of the warehouse',
+    description: 'URL фотографії складу',
     required: false,
   })
   @IsOptional()
@@ -66,7 +66,7 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   photo?: string;
 
   @ApiPropertyOptional({
-    description: 'Timestamp of last update',
+    description: 'Час останнього оновлення',
     required: false,
   })
   updatedAt: Date = new Date();

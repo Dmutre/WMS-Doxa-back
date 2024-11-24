@@ -8,7 +8,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Warehouse } from '@prisma/client';
 import { ClsService } from 'nestjs-cls';
 import { UserAction } from 'src/lib/decorators/user-action.decorator';
@@ -20,6 +26,7 @@ import { ConnectUserToWarehouseDTO } from './dto/connect-user.to-warehouse.dto';
 import { CreateWarehouseDTO } from './dto/create-warehouse.dto';
 import { FindWarehousesParamsDTO } from './dto/find-warehouses.dto';
 import { UpdateWarehouseDTO } from './dto/update-warehouse.dto';
+import { WerehouseListDto, WerehouseDto } from './dto/werehouse.dto';
 import { WarehouseService } from './warehouse.service';
 
 @ApiTags('Warehouse')
@@ -35,6 +42,10 @@ export class WarehouseController {
   @AuthPermissions([Permissions.CREATE_WAREHOUSE])
   @Post()
   @ApiOperation({ summary: 'Create a new warehouse' })
+  @ApiResponse({
+    status: 201,
+    type: WerehouseDto,
+  })
   async createWarehouse(
     @Body() createWarehouseDto: CreateWarehouseDTO,
   ): Promise<Warehouse> {
@@ -45,6 +56,13 @@ export class WarehouseController {
   @AuthPermissions([Permissions.FIND_WAREHOUSE])
   @Get('/:id')
   @ApiOperation({ summary: 'Get warehouse by ID' })
+  @ApiOkResponse({
+    type: WerehouseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Warehouse not found',
+  })
   async getWarehouseById(@Param('id') id: string): Promise<Warehouse> {
     return await this.warehouseService.getWarehouseById(id);
   }
@@ -53,6 +71,9 @@ export class WarehouseController {
   @AuthPermissions([Permissions.UPDATE_WAREHOUSE])
   @Put('/:id')
   @ApiOperation({ summary: 'Update warehouse by ID' })
+  @ApiOkResponse({
+    type: WerehouseDto,
+  })
   async updateWarehouse(
     @Param('id') id: string,
     @Body() updateWarehouseDto: UpdateWarehouseDTO,
@@ -64,6 +85,15 @@ export class WarehouseController {
   @AuthPermissions([Permissions.DELETE_WAREHOUSE])
   @Delete('/:id')
   @ApiOperation({ summary: 'Delete warehouse by ID' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
+  })
   async deleteWarehouse(@Param('id') id: string): Promise<{ message: string }> {
     return await this.warehouseService.deleteWarehouse(id);
   }
@@ -72,6 +102,9 @@ export class WarehouseController {
   @AuthPermissions([Permissions.FIND_WAREHOUSE])
   @Get()
   @ApiOperation({ summary: 'Get all warehouses' })
+  @ApiOkResponse({
+    type: WerehouseListDto,
+  })
   async getAllWarehouses(
     @Query() query: FindWarehousesParamsDTO,
   ): Promise<{ data: Warehouse[]; total: number }> {
@@ -82,14 +115,28 @@ export class WarehouseController {
   @AuthPermissions([Permissions.CONNECT_USER_TO_WEREHOUSE])
   @Post('/user/connect')
   @ApiOperation({ summary: 'Connect user to warehouse' })
+  @ApiResponse({
+    status: 201,
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string' },
+        warehouseId: { type: 'string' },
+      },
+    },
+  })
   async connectUserToWarehouse(@Body() data: ConnectUserToWarehouseDTO) {
     return await this.warehouseService.connectUserToWarehouse(data);
   }
 
   @UserAction(Action.GET_USER_WEREHOUSES)
   @AuthPermissions([Permissions.FIND_WAREHOUSE])
+  @Get('/user')
   @ApiOperation({
     summary: 'Get user warehouses (warehouses to which user is connected)',
+  })
+  @ApiOkResponse({
+    type: WerehouseListDto,
   })
   async getUserWarehouses(): Promise<Warehouse[]> {
     const userId = this.cls.get('user.id');

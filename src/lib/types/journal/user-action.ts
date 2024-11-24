@@ -25,6 +25,7 @@ export enum Action {
   FIND_USER_ACTIONS = 'findUserActions',
   FIND_PERMISSIONS = 'findPermissions',
   FIND_ROLES = 'findRoles',
+  FIND_ROLE = 'findRole',
   CREATE_ROLE = 'createRole',
   UPDATE_ROLE = 'updateRole',
   DELETE_ROLE = 'deleteRole',
