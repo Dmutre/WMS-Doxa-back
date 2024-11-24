@@ -8,7 +8,7 @@ export class UpdateRoleDataDto
   implements UpdateRoleData
 {
   @IsOptional()
-  @ApiPropertyOptional({ description: 'Назва ролі' })
+  @ApiPropertyOptional({ description: 'Назва ролі користувача' })
   name: string;
 
   @IsOptional()
