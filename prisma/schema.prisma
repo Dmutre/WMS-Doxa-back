@@ -60,9 +60,11 @@ model User {
   createdAt     DateTime   @default(now()) @map("created_at")
   updatedAt     DateTime   @updatedAt @map("updated_at")
 
-  tokens  Token[]
-  actions UserAction[]
-  warehouses      UserWarehouse[]
+  tokens     Token[]
+  actions    UserAction[]
+  warehouses UserWarehouse[]
+  tasks      Task[]          @relation("Assignee")
+  reports    Task[]          @relation("Reporter")
 
   @@map("users")
 }
@@ -98,76 +100,106 @@ model UserAction {
 
 // Connecting users to warehouse. User can be connected to many warehouses
 model UserWarehouse {
-  user            User          @relation(references: [id], fields: [userId], onDelete: Cascade)
-  userId          String
-  warehouse       Warehouse     @relation(references: [id], fields: [warehouseId], onDelete: Cascade)
-  warehouseId     String
+  user        User      @relation(references: [id], fields: [userId], onDelete: Cascade)
+  userId      String
+  warehouse   Warehouse @relation(references: [id], fields: [warehouseId], onDelete: Cascade)
+  warehouseId String
 
   @@id([userId, warehouseId])
   @@map("user_warehouses")
 }
 
 model Warehouse {
-  id                String      @id @default(uuid())
-  name              String
-  type              String
-  address           String
-  coordinates       String?
-  notes             String?
-  area              Float?
-  isActive          Boolean     @default(true)
-  photo             String?
-  createdAt         DateTime    @default(now()) @map("created_at")
-  updatedAt         DateTime    @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  address     String
+  coordinates String?
+  notes       String?
+  area        Float?
+  isActive    Boolean  @default(true)
+  photo       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  users             UserWarehouse[]
-  batches           Batch[]
+  users   UserWarehouse[]
+  batches Batch[]
 
   @@unique([name, address])
   @@map("warehouses")
 }
 
 model Item {
-  id              String      @id @default(uuid())
-  name            String
-  sku             String      @unique
-  description     String?
-  barcode         String?     @unique
-  weight          Float?
-  dimensions      String?
-  category        String?
-  manufacturer    String?
-  expirationDate  DateTime?
-  warrantyPeriod  Int?        @map("warranty_period")
-  originCountry   String?     @map("origin_country")
-  photoUrl        String[]    @map("photo_url")
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
+  id             String    @id @default(uuid())
+  name           String
+  sku            String    @unique
+  description    String?
+  barcode        String?   @unique
+  weight         Float?
+  dimensions     String?
+  category       String?
+  manufacturer   String?
+  expirationDate DateTime?
+  warrantyPeriod Int?      @map("warranty_period")
+  originCountry  String?   @map("origin_country")
+  photoUrl       String[]  @map("photo_url")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
-  batches         Batch[]
+  batches Batch[]
 
   @@map("items")
 }
 
 model Batch {
-  id             String    @id @default(uuid()) 
-  warehouseId    String    @map("warehouse_id")
-  warehouse      Warehouse @relation(fields: [warehouseId], references: [id])
-  itemId         String    @map("item_id")
-  item           Item      @relation(fields: [itemId], references: [id])
-  quantity       Int
-  row            Int?
-  shelf          Int?
-  position       Int?
-  width          Float?
-  height         Float?
-  depth          Float?
-  weight         Float?
-  receivedAt     DateTime  @default(now()) @map("received_at")
-  expiryDate     DateTime? @map("expiry_date")
-  isReserved     Boolean   @default(false)  @map("is_reserved")
-  createdAt      DateTime  @default(now())  @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
+  id          String    @id @default(uuid())
+  warehouseId String    @map("warehouse_id")
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  itemId      String    @map("item_id")
+  item        Item      @relation(fields: [itemId], references: [id])
+  quantity    Int
+  row         Int?
+  shelf       Int?
+  position    Int?
+  width       Float?
+  height      Float?
+  depth       Float?
+  weight      Float?
+  receivedAt  DateTime  @default(now()) @map("received_at")
+  expiryDate  DateTime? @map("expiry_date")
+  isReserved  Boolean   @default(false) @map("is_reserved")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("batches")
+}
+
+enum TaskStatus {
+  BACKLOG
+  PLANNED
+  IN_PROGRESS
+  DONE
+  CANCELED
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  code        String     @default(dbgenerated("gen_code()")) @db.VarChar(10)
+  title       String     @db.VarChar(255)
+  description String?    @db.VarChar(4000)
+  status      TaskStatus
+  isOverdue   Boolean    @default(false) @map("is_overdue")
+  priority    Int?
+  estimate    Int?
+  spent       Int?
+  startDate   DateTime?  @map("start_date")
+  dueDate     DateTime?  @map("due_date")
+  assigneeId  String?    @map("assignee_id")
+  assignee    User?      @relation("Assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  reporterId  String?    @map("reporter_id")
+  reporter    User?      @relation("Reporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  @@map("tasks")
 }

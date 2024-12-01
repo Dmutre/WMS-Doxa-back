@@ -8,6 +8,7 @@ import { BatchModule } from './api/batch/batch.module';
 import { ItemModule } from './api/items/item.module';
 import { JournalModule } from './api/journal/journal.module';
 import { RoleModule } from './api/role/role.module';
+import { TaskModule } from './api/tasks/task.module';
 import { UserModule } from './api/user/user.module';
 import { WarehouseModule } from './api/warehouse/warehouse.module';
 import { DatabaseModule } from './database/database.module';
@@ -34,6 +35,7 @@ import { UserActionInterceptor } from './lib/interceptors/user-action.intercepto
     WarehouseModule,
     BatchModule,
     ItemModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [

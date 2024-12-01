@@ -53,6 +53,11 @@ export enum Action {
   DELETE_ITEM = 'deleteItem',
   FIND_ITEM = 'findItem',
   FIND_ITEMS = 'findItems',
+  FIND_TASKS = 'findTasks',
+  FIND_TASK = 'findTask',
+  DELETE_TASK = 'deleteTask',
+  CREATE_TASK = 'createTask',
+  UPDATE_TASK = 'updateTask',
 }
 
 export interface UserActionContext {
