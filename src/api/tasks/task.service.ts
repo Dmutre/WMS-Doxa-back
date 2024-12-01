@@ -2,8 +2,11 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { Prisma, TaskStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/database/prisma.service';
@@ -14,7 +17,9 @@ import {
 } from 'src/lib/types/tasks';
 
 @Injectable()
-export class TaskService {
+export class TaskService implements OnModuleInit {
+  private readonly logger = new Logger(TaskService.name);
+
   private readonly taskRepo: Prisma.TaskDelegate;
 
   constructor(prisma: PrismaService) {
@@ -242,5 +247,28 @@ export class TaskService {
     } catch {
       throw new NotFoundException('Task not found');
     }
+  }
+
+  @Cron('*/5 * * * *')
+  async updateOverdueTasks() {
+    this.logger.log('Updating overdue tasks');
+
+    await this.taskRepo.updateMany({
+      where: {
+        dueDate: {
+          lte: new Date(),
+        },
+        status: {
+          notIn: [TaskStatus.DONE, TaskStatus.CANCELED],
+        },
+      },
+      data: {
+        isOverdue: true,
+      },
+    });
+  }
+
+  async onModuleInit() {
+    await this.updateOverdueTasks();
   }
 }
