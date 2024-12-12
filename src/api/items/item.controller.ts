@@ -16,10 +16,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Item } from '@prisma/client';
-import { UserAction } from 'src/lib/decorators/user-action.decorator';
-import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
-import { Permissions } from 'src/lib/types/auth/permission';
-import { Action } from 'src/lib/types/journal/user-action';
+import { UserAction } from '../../lib/decorators/user-action.decorator';
+import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
+import { Permissions } from '../../lib/types/auth/permission';
+import { Action } from '../../lib/types/journal/user-action';
 import { CreateItemDTO } from './dto/create-item.dto';
 import { FindItemsParamsDTO } from './dto/find-item.dto';
 import { ItemListDto, ItemDto } from './dto/item.dto';
