@@ -6,5 +6,8 @@
   },
   "coverageDirectory": "./coverage/integration",
   "testEnvironment": "node",
-  "testMatch": ["<rootDir>/tests/integration/**/*.integration-spec.ts"]
+  "testMatch": ["<rootDir>/tests/integration/**/*.integration-spec.ts"],
+  "moduleNameMapper": {
+    "src/(.*)": "<rootDir>/src/$1"
+  }
 }

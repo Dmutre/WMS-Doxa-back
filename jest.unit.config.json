@@ -6,5 +6,8 @@
   },
   "coverageDirectory": "./coverage/unit",
   "testEnvironment": "node",
-  "testMatch": ["**/*.spec.ts"]
+  "testMatch": ["**/*.spec.ts"],
+  "moduleNameMapper": {
+    "src/(.*)": "<rootDir>/src/$1"
+  }
 }
