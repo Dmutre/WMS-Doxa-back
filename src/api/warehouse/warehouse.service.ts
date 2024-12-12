@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { UserService } from '../user/user.service';
 import { ConnectUserToWarehouseDTO } from './dto/connect-user.to-warehouse.dto';
 import { CreateWarehouseDTO } from './dto/create-warehouse.dto';

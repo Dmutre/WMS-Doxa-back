@@ -17,11 +17,11 @@ import {
 } from '@nestjs/swagger';
 import { Warehouse } from '@prisma/client';
 import { ClsService } from 'nestjs-cls';
-import { UserAction } from 'src/lib/decorators/user-action.decorator';
-import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
-import { Permissions } from 'src/lib/types/auth/permission';
-import { AppContext } from 'src/lib/types/common';
-import { Action } from 'src/lib/types/journal/user-action';
+import { UserAction } from '../../lib/decorators/user-action.decorator';
+import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
+import { Permissions } from '../../lib/types/auth/permission';
+import { AppContext } from '../../lib/types/common';
+import { Action } from '../../lib/types/journal/user-action';
 import { ConnectUserToWarehouseDTO } from './dto/connect-user.to-warehouse.dto';
 import { CreateWarehouseDTO } from './dto/create-warehouse.dto';
 import { FindWarehousesParamsDTO } from './dto/find-warehouses.dto';

@@ -12,7 +12,7 @@ import {
 import {
   FindWarehousesParams,
   WarehouseOrderColumn,
-} from 'src/lib/types/warehouse';
+} from '../../../lib/types/warehouse';
 
 export class FindWarehousesParamsDTO implements FindWarehousesParams {
   @IsString()
