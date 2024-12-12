@@ -9,7 +9,7 @@ import {
   IsInt,
   IsPositive,
 } from 'class-validator';
-import { BatchOrderColumn, FindBatchesParams } from 'src/lib/types/batch';
+import { BatchOrderColumn, FindBatchesParams } from '../../../lib/types/batch';
 
 export class FindBatchesParamsDTO implements FindBatchesParams {
   @ApiPropertyOptional({

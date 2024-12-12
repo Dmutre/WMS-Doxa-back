@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/database/prisma.service';
-import { JwtPayload } from 'src/lib/types/auth/jwt-payload';
-import { Permissions } from 'src/lib/types/auth/permission';
-import { AuthConfig } from 'src/lib/types/configs/auth';
-import { UserCredentials } from 'src/lib/types/users';
-import { hashPassword, validatePassword } from 'src/lib/utils/crypto';
+import { PrismaService } from '../../database/prisma.service';
+import { JwtPayload } from '../../lib/types/auth/jwt-payload';
+import { Permissions } from '../../lib/types/auth/permission';
+import { AuthConfig } from '../../lib/types/configs/auth';
+import { UserCredentials } from '../../lib/types/users';
+import { hashPassword, validatePassword } from '../../lib/utils/crypto';
 import { UserService } from '../user/user.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';

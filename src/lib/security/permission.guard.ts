@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ClsService } from 'nestjs-cls';
-import { AuthService } from 'src/api/auth/auth.service';
-import { Permissions } from 'src/lib/types/auth/permission';
+import { AuthService } from '../../api/auth/auth.service';
+import { Permissions } from '../../lib/types/auth/permission';
 import { AppContext } from '../types/common';
 
 @Injectable()

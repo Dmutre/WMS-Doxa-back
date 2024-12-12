@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Batch } from '@prisma/client';
+import { ClsService } from 'nestjs-cls';
+import { BatchOrderColumn } from '../../lib/types/batch';
+import { AuthService } from '../auth/auth.service';
 import { BatchController } from './batch.controller';
 import { BatchService } from './batch.service';
 import { CreateBatchDTO } from './dto/create-batch.dto';
@@ -35,17 +38,26 @@ describe('BatchController', () => {
   ];
 
   const mockBatchService = {
-    createBatch: jest.fn((dto: CreateBatchDTO) => Promise.resolve(mockBatch)),
-    getBatchById: jest.fn((id: string) => Promise.resolve(mockBatch)),
-    updateBatch: jest.fn((id: string, dto: UpdateBatchDTO) =>
+    createBatch: jest.fn(() => Promise.resolve(mockBatch)),
+    getBatchById: jest.fn(() => Promise.resolve(mockBatch)),
+    updateBatch: jest.fn((_id: string, dto: UpdateBatchDTO) =>
       Promise.resolve({ ...mockBatch, ...dto }),
     ),
     deleteBatch: jest.fn((id: string) =>
       Promise.resolve({ message: `Batch ${id} deleted successfully` }),
     ),
-    getAllBatches: jest.fn((query: FindBatchesParamsDTO) =>
+    getAllBatches: jest.fn(() =>
       Promise.resolve({ data: mockBatchList, total: mockBatchList.length }),
     ),
+  };
+
+  const mockAuthService = {
+    validateUser: jest.fn(),
+  };
+
+  const mockClsService = {
+    get: jest.fn(),
+    set: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -56,6 +68,8 @@ describe('BatchController', () => {
           provide: BatchService,
           useValue: mockBatchService,
         },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: ClsService, useValue: mockClsService },
       ],
     }).compile();
 
@@ -128,7 +142,13 @@ describe('BatchController', () => {
 
   describe('getAllBatches', () => {
     it('should return a list of batches', async () => {
-      const query: FindBatchesParamsDTO = { warehouseId: 'warehouse-id-1' };
+      const query: FindBatchesParamsDTO = {
+        warehouseId: 'warehouse-id-1',
+        orderBy: BatchOrderColumn.CREATED_AT,
+        orderDirection: 'asc',
+        page: 0,
+        pageSize: 20,
+      };
       const result = await batchController.getAllBatches(query);
       expect(result).toEqual({
         data: mockBatchList,
