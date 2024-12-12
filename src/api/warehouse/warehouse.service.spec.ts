@@ -1,13 +1,13 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../database/prisma.service';
+import { WarehouseOrderColumn } from '../../lib/types/warehouse';
 import { UserService } from '../user/user.service';
 import { ConnectUserToWarehouseDTO } from './dto/connect-user.to-warehouse.dto';
 import { CreateWarehouseDTO } from './dto/create-warehouse.dto';
 import { FindWarehousesParamsDTO } from './dto/find-warehouses.dto';
 import { UpdateWarehouseDTO } from './dto/update-warehouse.dto';
 import { WarehouseService } from './warehouse.service';
-import { WarehouseOrderColumn } from '../../lib/types/warehouse';
 
 describe('WarehouseService', () => {
   let warehouseService: WarehouseService;

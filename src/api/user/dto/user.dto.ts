@@ -1,7 +1,7 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 import { StatusEnum } from '@prisma/client';
-import { RoleDto } from 'src/api/role/dto/role.dto';
-import { ShiftScheduleEntry } from 'src/lib/types/users';
+import { RoleDto } from '../../../api/role/dto/role.dto';
+import { ShiftScheduleEntry } from '../../../lib/types/users';
 
 export class ShiftScheduleEntryDto {
   @ApiResponseProperty()
