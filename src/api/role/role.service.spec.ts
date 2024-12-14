@@ -14,6 +14,7 @@ import { RoleService } from './role.service';
 
 describe('RoleService', () => {
   let roleService: RoleService;
+  // eslint-disable-next-line
   let prismaService: PrismaService;
 
   const mockRole = {

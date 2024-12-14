@@ -11,7 +11,9 @@ import { WarehouseService } from './warehouse.service';
 
 describe('WarehouseService', () => {
   let warehouseService: WarehouseService;
+  // eslint-disable-next-line
   let prismaService: PrismaService;
+  // eslint-disable-next-line
   let userService: UserService;
 
   const mockWarehouse = {

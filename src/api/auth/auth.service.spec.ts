@@ -17,7 +17,9 @@ describe('AuthService', () => {
   let authService: AuthService;
   let userService: UserService;
   let jwtService: JwtService;
+  // eslint-disable-next-line
   let configService: ConfigService;
+  // eslint-disable-next-line
   let prismaService: PrismaService;
 
   const mockUserService = {
@@ -106,6 +108,7 @@ describe('AuthService', () => {
       jest
         .spyOn(userService, 'findUserCredentials')
         .mockResolvedValue(mockUserCredentials);
+      // eslint-disable-next-line
       jest.spyOn(authService as any, 'issueTokens').mockReturnValue(tokens);
 
       const result = await authService.refreshTokens(refreshToken);
@@ -133,6 +136,7 @@ describe('AuthService', () => {
         mockUserCredentials,
       );
       (validatePassword as jest.Mock).mockResolvedValue(true);
+      // eslint-disable-next-line
       jest.spyOn(authService as any, 'issueTokens').mockReturnValue(tokens);
 
       const result = await authService.login(loginData);
