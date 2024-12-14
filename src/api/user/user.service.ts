@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, StatusEnum } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import {
   ChangeRoleData,
   CreateSuperUserData,
@@ -13,8 +13,8 @@ import {
   FindUsersParams,
   UpdateUserData,
   UserCredentials,
-} from 'src/lib/types/users';
-import { hashPassword } from 'src/lib/utils/crypto';
+} from '../../lib/types/users';
+import { hashPassword } from '../../lib/utils/crypto';
 import { RoleService } from '../role/role.service';
 import { UserMapper } from './user.mapper';
 

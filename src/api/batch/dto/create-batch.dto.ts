@@ -6,7 +6,7 @@ import {
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { CreateBatchData } from 'src/lib/types/batch';
+import { CreateBatchData } from '../../../lib/types/batch';
 
 export class CreateBatchDTO implements CreateBatchData {
   @ApiProperty({ description: 'ID складу, до якого прив’язана партія' })

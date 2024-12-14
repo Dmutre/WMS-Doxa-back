@@ -7,7 +7,7 @@ import {
   IsInt,
   IsPositive,
 } from 'class-validator';
-import { ItemOrderColumn, FindItemsParams } from 'src/lib/types/item';
+import { ItemOrderColumn, FindItemsParams } from '../../../lib/types/item';
 
 export class FindItemsParamsDTO implements FindItemsParams {
   @ApiPropertyOptional({

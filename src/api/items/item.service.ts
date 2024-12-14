@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Item, Prisma } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { CreateItemDTO } from './dto/create-item.dto';
 import { FindItemsParamsDTO } from './dto/find-item.dto';
 import { UpdateItemDTO } from './dto/update-item.dto';

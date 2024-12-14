@@ -8,7 +8,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { FindRolesParams, RoleOrderColumn } from 'src/lib/types/roles';
+import { FindRolesParams, RoleOrderColumn } from '../../../lib/types/roles';
 
 export class FindRolesParamsDto implements FindRolesParams {
   @IsString()

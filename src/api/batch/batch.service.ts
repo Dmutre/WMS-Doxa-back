@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { CreateBatchDTO } from './dto/create-batch.dto';
 import { FindBatchesParamsDTO } from './dto/find-batch.dto';
 import { UpdateBatchDTO } from './dto/update-batch.dto';

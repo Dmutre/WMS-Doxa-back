@@ -5,12 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import {
   CreateRoleData,
   FindRolesParams,
   UpdateRoleData,
-} from 'src/lib/types/roles';
+} from '../../lib/types/roles';
 
 @Injectable()
 export class RoleService {

@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsBoolean, IsDate } from 'class-validator';
-import { UpdateBatchData } from 'src/lib/types/batch';
+import { UpdateBatchData } from '../../../lib/types/batch';
 
 export class UpdateBatchDTO implements UpdateBatchData {
   @ApiPropertyOptional({ description: 'Кількість товарів у партії' })
