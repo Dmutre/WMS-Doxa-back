@@ -58,6 +58,11 @@ export enum Action {
   DELETE_TASK = 'deleteTask',
   CREATE_TASK = 'createTask',
   UPDATE_TASK = 'updateTask',
+  CREATE_DELIVERY = 'createDelivery',
+  UPDATE_DELIVERY = 'updateDelivery',
+  FIND_DELIVERY = 'findDelivery',
+  FIND_DELIVERIES = 'findDeliveries',
+  DELETE_DELIVERY = 'deleteDelivery',
 }
 
 export interface UserActionContext {

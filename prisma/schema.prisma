@@ -151,6 +151,17 @@ model Item {
   @@map("items")
 }
 
+model BatchDelivery {
+  delivery    Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  deliveryId  String   @map("delivery_id")
+  batch       Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId     String   @map("batch_id") @unique
+
+  @@id([deliveryId, batchId])
+  @@unique([deliveryId, batchId])
+  @@map("batch_deliveries")
+}
+
 model Batch {
   id          String    @id @default(uuid())
   warehouseId String    @map("warehouse_id")
@@ -170,6 +181,8 @@ model Batch {
   isReserved  Boolean   @default(false) @map("is_reserved")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  deliveries  BatchDelivery?
 
   @@map("batches")
 }
@@ -202,4 +215,35 @@ model Task {
   updatedAt   DateTime   @updatedAt @map("updated_at")
 
   @@map("tasks")
+}
+
+enum DeliveryType {
+  INCOMING
+  OUTGOING
+}
+
+enum DeliveryStatus {
+  SCHEDULED
+  LOADING
+  IN_TRANSIT
+  DELIVERED
+  SHIPPED
+  CANCELED
+  UNRESOLVED
+}
+
+model Delivery {
+  id             String         @id @default(uuid())
+  type           DeliveryType
+  status         DeliveryStatus
+  scheduledAt    DateTime
+  completedAt    DateTime?
+  description    String?        @db.VarChar(1000)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+
+  batches        BatchDelivery[]
+
+  @@map("deliveries")
 }

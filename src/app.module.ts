@@ -6,6 +6,7 @@ import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './api/auth/auth.module';
 import { BatchModule } from './api/batch/batch.module';
+import { DeliveryModule } from './api/deliveries/delivery.module';
 import { ItemModule } from './api/items/item.module';
 import { JournalModule } from './api/journal/journal.module';
 import { RoleModule } from './api/role/role.module';
@@ -37,6 +38,7 @@ import { UserActionInterceptor } from './lib/interceptors/user-action.intercepto
     WarehouseModule,
     BatchModule,
     ItemModule,
+    DeliveryModule,
     TaskModule,
   ],
   controllers: [],
