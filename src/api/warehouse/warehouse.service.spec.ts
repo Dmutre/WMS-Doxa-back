@@ -127,6 +127,7 @@ describe('WarehouseService', () => {
     it('should update a warehouse by ID', async () => {
       const updateWarehouseDto: UpdateWarehouseDTO = {
         name: 'Updated Warehouse',
+        updatedAt: new Date(),
       };
 
       const result = await warehouseService.updateWarehouse(

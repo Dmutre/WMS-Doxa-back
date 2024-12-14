@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsNumber,
   IsPositive,
+  Allow,
 } from 'class-validator';
 import { UpdateWarehouseData } from 'src/lib/types/warehouse';
 
@@ -64,4 +65,11 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   @IsOptional()
   @IsString()
   photo?: string;
+
+  @ApiPropertyOptional({
+    description: 'Час останнього оновлення',
+    required: false,
+  })
+  @Allow()
+  updatedAt: Date = new Date();
 }
