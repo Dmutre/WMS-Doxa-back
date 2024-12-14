@@ -32,7 +32,6 @@ async function bootstrap() {
       },
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   );
   const options = new DocumentBuilder()

@@ -64,10 +64,4 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
   @IsOptional()
   @IsString()
   photo?: string;
-
-  @ApiPropertyOptional({
-    description: 'Час останнього оновлення',
-    required: false,
-  })
-  updatedAt: Date = new Date();
 }
