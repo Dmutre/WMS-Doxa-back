@@ -3,8 +3,8 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./Dockerfile
-    command: ["sh", "-c", "npm run test:integration"]
+      dockerfile: ./Dockerfile.dev
+    command: ["sh", "-c", "pnpm run test:integration"]
     environment:
       NODE_ENV: test
       PORT: ${PORT}
