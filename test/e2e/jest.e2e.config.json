@@ -1,12 +1,12 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "../..",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "coverageDirectory": "./coverage/e2e",
   "testEnvironment": "node",
-  "testMatch": ["<rootDir>/tests/e2e/**/*.e2e-spec.ts"],
+  "testMatch": ["<rootDir>/test/e2e/**/*.e2e-spec.ts"],
   "moduleNameMapper": {
     "src/(.*)": "<rootDir>/src/$1"
   },
