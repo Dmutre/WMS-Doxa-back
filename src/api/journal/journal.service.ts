@@ -42,7 +42,7 @@ export class JournalService {
           [orderBy]: orderDirection,
         },
         skip: (page - 1) * pageSize,
-        take: pageSize,
+        take: Number(pageSize),
         include: {
           user: {
             select: {

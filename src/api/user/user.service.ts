@@ -62,7 +62,7 @@ export class UserService {
           [orderBy]: orderDirection,
         },
         skip: (page - 1) * pageSize,
-        take: pageSize,
+        take: +pageSize,
         include: {
           role: true,
         },

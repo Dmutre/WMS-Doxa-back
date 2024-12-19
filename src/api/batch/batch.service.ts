@@ -73,7 +73,7 @@ export class BatchService {
         [orderBy]: orderDirection,
       },
       skip: (page - 1) * pageSize,
-      take: pageSize,
+      take: Number(pageSize),
     });
 
     const total = await this.batchRepo.count({ where });
