@@ -25,8 +25,15 @@ jobs:
     - name: Install pnpm
       run: npm install -g pnpm
 
-    - name: Install dependencies
-      run: pnpm install
-
     - name: Run integration tests with Docker Compose
+      env:
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        ACCESS_TTL: ${{ secrets.ACCESS_TTL }}
+        JWT_TTL: ${{ secrets.JWT_TTL }}
+        PORT: ${{ secrets.PORT }}
+        HOST: ${{ secrets.HOST }}
       run: pnpm dockerize:integration
