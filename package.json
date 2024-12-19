@@ -16,12 +16,12 @@
     "test": "jest",
     "test:unit": "jest --config jest.unit.config.json",
     "test:e2e": "jest --config ./test/e2e/jest.e2e.config.json",
-    "test:integration": "jest --config ./test/integration/jest.integration.config.json",
+    "test:integration": "jest --config ./test/integration/jest.integration.config.json --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "db:seed": "ts-node prisma/seeds/seed.ts",
-    "dockerize:integration": "docker compose -f ./test/integration/docker-compose.integration.test.yaml up --abort-on-container-exit --exit-code-from api"
+    "dockerize:integration": "docker compose -f ./docker-compose.integration.test.yaml up --abort-on-container-exit --exit-code-from api"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

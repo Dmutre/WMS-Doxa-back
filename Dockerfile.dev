@@ -10,6 +10,8 @@ RUN pnpm install --production=false
 
 RUN pnpm add jest ts-jest @types/jest
 
+RUN apk add --no-cache openssl
+
 COPY . .
 
 EXPOSE 3000

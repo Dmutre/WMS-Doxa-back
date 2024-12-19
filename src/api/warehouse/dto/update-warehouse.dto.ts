@@ -71,5 +71,5 @@ export class UpdateWarehouseDTO implements UpdateWarehouseData {
     required: false,
   })
   @Allow()
-  updatedAt: Date = new Date();
+  updatedAt?: Date = new Date();
 }

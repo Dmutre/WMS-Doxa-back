@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.dev
-    command: ["sh", "-c", "pnpm run test:integration"]
+    command: ["sh", "-c", "pnpm prisma migrate deploy && pnpm prisma generate && pnpm run test:integration"]
     environment:
       NODE_ENV: test
       PORT: ${PORT}
