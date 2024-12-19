@@ -9,5 +9,14 @@
   "testMatch": ["**/*.spec.ts"],
   "moduleNameMapper": {
     "src/(.*)": "<rootDir>/src/$1"
-  }
+  },
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/**/*.module.ts",
+    "!src/**/*.dto.ts",
+    "!src/main.ts",
+    "!src/**/index.ts"
+  ],
+  "coverageReporters": ["text", "lcov", "json", "html"]
 }

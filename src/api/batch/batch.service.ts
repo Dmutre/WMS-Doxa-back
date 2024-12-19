@@ -69,6 +69,9 @@ export class BatchService {
 
     const batches = await this.batchRepo.findMany({
       where,
+      include: {
+        item: true,
+      },
       orderBy: {
         [orderBy]: orderDirection,
       },
