@@ -25,7 +25,7 @@ jobs:
     - name: Install pnpm
       run: npm install -g pnpm
 
-    - name: Run integration tests with Docker Compose
+    - name: Run e2e tests with Docker Compose
       env:
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
@@ -36,4 +36,9 @@ jobs:
         JWT_TTL: ${{ secrets.JWT_TTL }}
         PORT: ${{ secrets.PORT }}
         HOST: ${{ secrets.HOST }}
+        CLI_USER_NAME: ${{ secrets.CLI_USER_NAME }}
+        CLI_USER_FIRST_NAME: ${{ secrets.CLI_USER_FIRST_NAME }}
+        CLI_USER_LAST_NAME: ${{ secrets.CLI_USER_LAST_NAME }}
+        CLI_USER_EMAIL: ${{ secrets.CLI_USER_EMAIL }}
+        CLI_USER_PASSWORD: ${{ secrets.CLI_USER_PASSWORD }}
       run: pnpm dockerize:e2e
