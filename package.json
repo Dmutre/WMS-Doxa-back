@@ -21,6 +21,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:load": "artillery run --env-file=test/load/.env test/load/load-test.yml",
     "db:seed": "ts-node prisma/seeds/seed.ts",
     "dockerize:integration": "docker compose -f ./docker-compose.integration.test.yaml up --abort-on-container-exit --exit-code-from api",
     "dockerize:e2e": "docker compose -f ./docker-compose.e2e.test.yaml up --abort-on-container-exit --exit-code-from api"
