@@ -1,0 +1,233 @@
+config:
+  target: "{{ $env.TARGET }}"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: Warm up phase
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 30
+      name: Spike phase
+  processor: "./processor.js"
+
+before:
+  flow:
+    - log: "Initializing test environment..."
+    - post:
+        url: "/auth/login"
+        json:
+          email: "{{ $env.TEST_USER_EMAIL }}"
+          password: "{{ $env.TEST_USER_PASSWORD }}"
+        capture:
+          - json: "$.token"
+            as: "token"
+    - post:
+        url: "/warehouse"
+        headers:
+          Authorization: "Bearer {{ token }}"
+        json:
+          name: "Test Werehouse {{ $testId }}"
+          type: "Test"
+          address: "Test, Test str., 01"
+        capture:
+          - json: "$.id"
+            as: "werehouseId"
+    - post:
+        url: "/item"
+        headers:
+          Authorization: "Bearer {{ token }}"
+        json:
+          name: "Test Item {{ $testId }}"
+          sku: "{{ $testId }}"
+        capture:
+          - json: "$.id"
+            as: "itemId"
+
+scenarios:
+  - name: "Batch processing"
+    weight: 60
+    flow:
+      - get:
+          url: "/auth/me"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          capture:
+            - json: "$.id"
+              as: "userId"
+      - get:
+          url: "/warehouse?page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - get:
+          url: "/warehouse/{{ werehouseId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/batch?warehouseId={{ werehouseId }}&page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/item/{{ itemId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - post:
+          url: "/batch"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            warehouseId: "{{ werehouseId }}"
+            itemId: "{{ itemId }}"
+            quantity: 42
+          capture:
+            - json: "$.id"
+              as: "batchId"
+      - get:
+          url: "/batch/{{ batchId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/tasks?assigneeId={{ userId }}&page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - post:
+          url: "/tasks"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            assigneeId: "{{ userId }}"
+            title: "Test task"
+            description: "Test task description"
+            status: "IN_PROGRESS"
+          capture:
+            - json: "$.id"
+              as: "taskId"
+      - get:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - put:
+          url: "/batch/{{ batchId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            row: 42
+            shelf: 42
+            position: 42
+            isReserved: false
+      - get:
+          url: "/batch/{{ batchId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - put:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            status: "DONE"
+      - get:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+
+  - name: "Delivery processing"
+    weight: 40
+    flow:
+      - get:
+          url: "/auth/me"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          capture:
+            - json: "$.id"
+              as: "userId"
+      - get:
+          url: "/warehouse?page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - get:
+          url: "/warehouse/{{ werehouseId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/batch?warehouseId={{ werehouseId }}&page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/item/{{ itemId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - get:
+          url: "/delivery?page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - post:
+          url: "/delivery"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          beforeRequest: setScheduledAt
+          json:
+            type: "INCOMING"
+            status: "LOADING"
+            batches:
+              - warehouseId: "{{ werehouseId }}"
+                itemId: "{{ itemId }}"
+                quantity: 42
+          capture:
+            - json: "$.id"
+              as: "deliveryId"
+      - get:
+          url: "/delivery/{{ deliveryId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - get:
+          url: "/tasks?assigneeId={{ userId }}&page=1&pageSize=10"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - post:
+          url: "/tasks"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            assigneeId: "{{ userId }}"
+            title: "Test task"
+            description: "Test task description"
+            status: "IN_PROGRESS"
+          capture:
+            - json: "$.id"
+              as: "taskId"
+      - get:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - think: 1
+      - put:
+          url: "/delivery/{{ deliveryId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            status: "DELIVERED"
+      - get:
+          url: "/delivery/{{ deliveryId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+      - put:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            status: "DONE"
+      - get:
+          url: "/tasks/{{ taskId }}"
+          headers:
+            Authorization: "Bearer {{ token }}"
