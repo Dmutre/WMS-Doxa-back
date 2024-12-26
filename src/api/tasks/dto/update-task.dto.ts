@@ -14,8 +14,11 @@ import {
   MaxLength,
   MinDate,
 } from 'class-validator';
+import {
+  IsDateDivisibleBy,
+  IsNullable,
+} from 'src/lib/core/decorators/validation.decorator';
 import { TaskPriority, UpdateTaskData } from 'src/lib/types/tasks';
-import { IsDateDivisibleBy, IsNullable } from 'src/lib/utils/validation';
 
 export class UpdateTaskDataDto implements UpdateTaskData {
   @IsString()

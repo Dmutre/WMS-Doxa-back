@@ -16,9 +16,9 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ClsService } from 'nestjs-cls';
+import { CookieUtils } from '../../lib/core/utils/cookie';
 import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
 import { AppContext } from '../../lib/types/common';
-import { CookieUtils } from '../../lib/utils/cookie';
 import { UserDto } from '../user/dto/user.dto';
 import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';

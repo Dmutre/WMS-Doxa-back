@@ -16,7 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Batch } from '@prisma/client';
-import { UserAction } from '../../lib/decorators/user-action.decorator';
+import { UserAction } from '../../lib/core/decorators/user-action.decorator';
 import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
 import { Permissions } from '../../lib/types/auth/permission';
 import { Action } from '../../lib/types/journal/user-action';

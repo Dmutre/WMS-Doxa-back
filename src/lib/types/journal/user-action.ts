@@ -64,7 +64,3 @@ export enum Action {
   FIND_DELIVERIES = 'findDeliveries',
   DELETE_DELIVERY = 'deleteDelivery',
 }
-
-export interface UserActionContext {
-  action: Action;
-}

@@ -8,6 +8,7 @@ import { AuthModule } from './api/auth/auth.module';
 import { BatchModule } from './api/batch/batch.module';
 import { DeliveryModule } from './api/deliveries/delivery.module';
 import { ItemModule } from './api/items/item.module';
+import { JournalInterceptor } from './api/journal/interceptors/journal.interceptor';
 import { JournalModule } from './api/journal/journal.module';
 import { RoleModule } from './api/role/role.module';
 import { TaskModule } from './api/tasks/task.module';
@@ -16,7 +17,6 @@ import { WarehouseModule } from './api/warehouse/warehouse.module';
 import { DatabaseModule } from './database/database.module';
 import authConfig from './lib/configs/auth.config';
 import serverConfig from './lib/configs/server.config';
-import { UserActionInterceptor } from './lib/interceptors/user-action.interceptor';
 
 @Module({
   imports: [
@@ -45,7 +45,7 @@ import { UserActionInterceptor } from './lib/interceptors/user-action.intercepto
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: UserActionInterceptor,
+      useClass: JournalInterceptor,
     },
   ],
 })
