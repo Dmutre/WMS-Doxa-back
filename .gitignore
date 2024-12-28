@@ -17,6 +17,7 @@ lerna-debug.log*
 
 # Tests
 /coverage
+/.stryker-tmp
 /.nyc_output
 
 # IDEs and editors
@@ -54,3 +55,6 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Docker
+/test/db
