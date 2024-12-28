@@ -17,8 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { Warehouse } from '@prisma/client';
 import { ClsService } from 'nestjs-cls';
-import { UserAction } from '../../lib/decorators/user-action.decorator';
-import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
+import { UserAction } from '../../lib/core/decorators/user-action.decorator';
+import { AuthPermissions } from '../../lib/core/security/decorators/auth-permission';
 import { Permissions } from '../../lib/types/auth/permission';
 import { AppContext } from '../../lib/types/common';
 import { Action } from '../../lib/types/journal/user-action';

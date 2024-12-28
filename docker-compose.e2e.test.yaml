@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.dev
-    command: ["sh", "-c", "pnpm prisma migrate deploy && pnpm prisma generate && pnpm db:seed && pnpm build && node ./dist/src/cli.js $CLI_USER_NAME $CLI_USER_FIRST_NAME $CLI_USER_LAST_NAME $CLI_USER_EMAIL $CLI_USER_PASSWORD && pnpm test:e2e"]
+    command: ["sh", "-c", "pnpm prisma migrate deploy && pnpm prisma generate && pnpm db:seed && pnpm build && node ./dist/src/cli.js sudo $CLI_USER_FIRST_NAME $CLI_USER_LAST_NAME $CLI_USER_EMAIL $CLI_USER_PASSWORD && pnpm test:e2e"]
     environment:
       NODE_ENV: test
       PORT: ${PORT}

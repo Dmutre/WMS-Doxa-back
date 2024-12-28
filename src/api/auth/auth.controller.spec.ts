@@ -2,13 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Role, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { ClsService } from 'nestjs-cls';
-import { CookieUtils } from '../../lib/utils/cookie';
+import { CookieUtils } from '../../lib/core/utils/cookie';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';
 
-jest.mock('../../lib/utils/cookie');
+jest.mock('../../lib/core/utils/cookie');
 
 describe('AuthController', () => {
   let authController: AuthController;

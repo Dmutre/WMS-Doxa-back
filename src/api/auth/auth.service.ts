@@ -6,11 +6,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../database/prisma.service';
+import { hashPassword, validatePassword } from '../../lib/core/utils/crypto';
 import { JwtPayload } from '../../lib/types/auth/jwt-payload';
 import { Permissions } from '../../lib/types/auth/permission';
 import { AuthConfig } from '../../lib/types/configs/auth';
 import { UserCredentials } from '../../lib/types/users';
-import { hashPassword, validatePassword } from '../../lib/utils/crypto';
 import { UserService } from '../user/user.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';

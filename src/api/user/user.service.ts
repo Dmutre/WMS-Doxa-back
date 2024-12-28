@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, StatusEnum } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { hashPassword } from '../../lib/core/utils/crypto';
 import {
   ChangeRoleData,
   CreateSuperUserData,
@@ -14,7 +15,6 @@ import {
   UpdateUserData,
   UserCredentials,
 } from '../../lib/types/users';
-import { hashPassword } from '../../lib/utils/crypto';
 import { RoleService } from '../role/role.service';
 import { UserMapper } from './user.mapper';
 

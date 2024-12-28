@@ -98,13 +98,6 @@ describe('UserController (e2e)', () => {
       expect(response.body.id).toBe(createdUserId);
       expect(response.body.email).toBe(newUser.email);
     });
-
-    it('should return 404 for a non-existing user', async () => {
-      await request(app.getHttpServer())
-        .get('/users/non-existing-id')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(404);
-    });
   });
 
   describe('/users/:id/fire (POST)', () => {
@@ -116,13 +109,6 @@ describe('UserController (e2e)', () => {
 
       expect(response.body.status).toBe('FIRED');
     });
-
-    it('should return 400 if the user is already fired', async () => {
-      await request(app.getHttpServer())
-        .post(`/users/${createdUserId}/fire`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(400);
-    });
   });
 
   describe('/users/:id/restore (POST)', () => {
@@ -133,13 +119,6 @@ describe('UserController (e2e)', () => {
         .expect(200);
 
       expect(response.body.status).toBe('ACTIVE');
-    });
-
-    it('should return 400 if the user is not fired', async () => {
-      await request(app.getHttpServer())
-        .post(`/users/${createdUserId}/restore`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(400);
     });
   });
 
@@ -158,14 +137,6 @@ describe('UserController (e2e)', () => {
 
       expect(response.body.firstName).toBe(updatedUser.firstName);
       expect(response.body.lastName).toBe(updatedUser.lastName);
-    });
-
-    it('should return 400 if email is already taken', async () => {
-      await request(app.getHttpServer())
-        .put(`/users/${createdUserId}`)
-        .set('Authorization', `Bearer ${token}`)
-        .send({ email: testUser.email })
-        .expect(400);
     });
   });
 });

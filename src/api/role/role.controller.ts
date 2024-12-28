@@ -15,8 +15,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserAction } from '../../lib/decorators/user-action.decorator';
-import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
+import { UserAction } from '../../lib/core/decorators/user-action.decorator';
+import { AuthPermissions } from '../../lib/core/security/decorators/auth-permission';
 import { Permissions } from '../../lib/types/auth/permission';
 import { Action } from '../../lib/types/journal/user-action';
 import { CreateRoleDataDto } from './dto/create-role';
