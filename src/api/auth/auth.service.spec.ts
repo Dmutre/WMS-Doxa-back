@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../database/prisma.service';
-import { validatePassword } from '../../lib/utils/crypto';
+import { validatePassword } from '../../lib/core/utils/crypto';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LogInDTO } from './dto/login.dto';

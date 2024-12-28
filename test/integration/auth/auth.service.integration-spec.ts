@@ -10,7 +10,7 @@ import { LogInDTO } from 'src/api/auth/dto/login.dto';
 import { UserModule } from 'src/api/user/user.module';
 import { UserService } from 'src/api/user/user.service';
 import { PrismaService } from 'src/database/prisma.service';
-import { hashPassword, validatePassword } from 'src/lib/utils/crypto';
+import { hashPassword, validatePassword } from 'src/lib/core/utils/crypto';
 import authConfig from '../../../src/lib/configs/auth.config';
 
 describe('AuthService (Integration)', () => {
