@@ -26,6 +26,7 @@ jobs:
             cd ghprojects/WMS-Doxa-back/
             git stash push -m "CI/CD stash"
             git pull origin dev --rebase
+            git submodule update --init
             git stash pop || true
             command -v pnpm >/dev/null 2>&1 || npm install -g pnpm
             command -v pm2 >/dev/null 2>&1 || npm install -g pm2
