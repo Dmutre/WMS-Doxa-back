@@ -6,7 +6,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { UserAction } from 'src/lib/core/decorators/user-action.decorator';
-import { AuthPermissions } from 'src/lib/security/decorators/auth-permission';
+import { AuthPermissions } from 'src/lib/core/security/decorators/auth-permission';
 import { Permissions } from 'src/lib/types/auth/permission';
 import { Action } from 'src/lib/types/journal/user-action';
 import { FindUserActionsParamsDto } from './dto/find-user-actions.dto';

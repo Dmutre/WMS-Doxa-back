@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Item } from '@prisma/client';
 import { UserAction } from '../../lib/core/decorators/user-action.decorator';
-import { AuthPermissions } from '../../lib/security/decorators/auth-permission';
+import { AuthPermissions } from '../../lib/core/security/decorators/auth-permission';
 import { Permissions } from '../../lib/types/auth/permission';
 import { Action } from '../../lib/types/journal/user-action';
 import { CreateItemDTO } from './dto/create-item.dto';
