@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { LogInDTO } from './dto/login.dto';
 
-jest.mock('../../lib/utils/cookie');
+jest.mock('../../lib/core/utils/cookie');
 
 describe('AuthController', () => {
   let authController: AuthController;

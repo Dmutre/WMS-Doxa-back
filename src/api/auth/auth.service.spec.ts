@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LogInDTO } from './dto/login.dto';
 
-jest.mock('../../lib/utils/crypto', () => ({
+jest.mock('../../lib/core/utils/crypto', () => ({
   validatePassword: jest.fn(),
   hashPassword: jest.fn(),
 }));
